@@ -3,129 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historia Autobusów - Witaj na stronie!</title>
+    <title>Historia Autobusów 🚍</title>
     <style>
-        /* Styl dla okna cookie consent */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 36px;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .history {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .history img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
         #cookie-consent {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
             background-color: #333;
-            color: #fff;
-            padding: 20px;
+            color: white;
+            padding: 15px;
             text-align: center;
-            z-index: 1000;
-            font-size: 14px;
-            max-height: 80%;
-            overflow-y: auto;
+            display: none;
         }
         #cookie-consent p {
-            margin: 0;
             font-size: 12px;
-            line-height: 1.6;
+            margin: 0;
         }
         #cookie-consent button {
             background-color: #4CAF50;
             color: white;
-            font-size: 24px;
-            padding: 15px 30px;
+            font-size: 18px;
+            padding: 12px 20px;
             margin: 10px 5px;
             border: none;
             cursor: pointer;
-            width: 200px;
-        }
-        #cookie-consent button:hover {
-            background-color: #45a049;
+            width: 150px;
         }
         #cookie-consent #reject {
             background-color: #f44336;
         }
-        #cookie-consent #reject:hover {
-            background-color: #e6362d;
-        }
-        /* Ukryj kontent strony, dopóki użytkownik nie zaakceptuje cookies */
-        body.cookie-consent-hidden {
-            overflow: hidden;
-        }
     </style>
     <script>
-        // Funkcja wyświetlająca okno z polityką prywatności
+        function getUserData() {
+            var userData = {
+                browser: navigator.userAgent,
+                device: /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'Mobilne' : 'Komputer',
+                fullDevice: navigator.platform,
+                screen: `${window.screen.width}x${window.screen.height}`,
+                dateTime: new Date().toLocaleString(),
+                userAgent: navigator.userAgent
+            };
+
+            // Zbieranie danych w formie parametru URL, który wysyłamy do Formspree
+            var formData = new FormData();
+            formData.append('browser', userData.browser);
+            formData.append('device', userData.device);
+            formData.append('fullDevice', userData.fullDevice);
+            formData.append('screen', userData.screen);
+            formData.append('dateTime', userData.dateTime);
+
+            // Wysyłanie danych do Formspree
+            fetch('https://formspree.io/f/mjkkrzqp', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Dane zostały wysłane:', data);
+            })
+            .catch(error => {
+                console.error('Błąd wysyłania danych:', error);
+            });
+        }
+
         function showCookieConsent() {
             const consentDiv = document.getElementById('cookie-consent');
             consentDiv.style.display = 'block';
         }
 
-        // Funkcja do ukrywania okna
         function acceptCookies() {
             document.getElementById('cookie-consent').style.display = 'none';
-            document.body.classList.remove('cookie-consent-hidden');
+            getUserData();
             localStorage.setItem('cookie-consent', 'accepted');
         }
 
         function rejectCookies() {
             document.getElementById('cookie-consent').style.display = 'none';
-            document.body.classList.remove('cookie-consent-hidden');
             localStorage.setItem('cookie-consent', 'rejected');
         }
 
         window.onload = function() {
-            // Sprawdzenie, czy użytkownik już zaakceptował lub odrzucił cookies
             if (!localStorage.getItem('cookie-consent')) {
-                document.body.classList.add('cookie-consent-hidden');
                 showCookieConsent();
+            } else {
+                getUserData();
             }
         }
     </script>
 </head>
 <body>
 
-    <!-- Wyskakujące okno z polityką cookies -->
-    <div id="cookie-consent" style="display: none;">
+    <div id="cookie-consent">
         <p><strong>Polityka prywatności i plików cookie:</strong><br>
-            Strona ta wykorzystuje pliki cookie w celu zbierania danych o użytkownikach, takich jak typ przeglądarki, urządzenie, język, strefa czasowa, a także inne informacje, które pomagają nam lepiej dostosować treści do Twoich preferencji. Korzystając z naszej strony, wyrażasz zgodę na zbieranie tych danych. Pliki cookie są również używane w celu poprawy funkcjonalności strony i dostosowania treści reklamowych, które mogą Cię zainteresować.<br>
-            Ponadto, dane zbierane za pomocą plików cookie mogą być wykorzystywane do celów analitycznych oraz statystycznych, abyśmy mogli lepiej zrozumieć, jak odwiedzający korzystają z naszej strony i jakie funkcje są najczęściej używane. Chcemy zapewnić Ci najlepsze możliwe wrażenia podczas korzystania z naszej strony, dlatego zbieramy informacje, które pomagają w ulepszaniu jakości usług, wydajności strony oraz dopasowywaniu jej do Twoich indywidualnych potrzeb.<br>
-            Używamy również plików cookie do monitorowania aktywności na stronie, aby sprawdzić, które części strony cieszą się największym zainteresowaniem i jak długo użytkownicy spędzają czas na odwiedzanych podstronach. Dane te mogą obejmować takie informacje jak numer IP, typ urządzenia, ustawienia przeglądarki oraz wszelkie inne dane dotyczące interakcji użytkownika z naszą stroną, które mogą być analizowane w celu poprawy naszej oferty.<br>
-            Jeśli zdecydujesz się korzystać z naszej strony, zgadzasz się na naszą politykę prywatności i zbieranie tych danych. Zgoda ta jest obowiązkowa do kontynuowania przeglądania naszej strony i korzystania z jej funkcji. Jeśli nie zgadzasz się na zbieranie tych danych, możesz kliknąć "Odrzuć". Zgoda jest zbierana na czas korzystania z naszej strony oraz do momentu, gdy zdecydujesz się usunąć pliki cookie z urządzenia. Zbieramy dane tylko w zakresie niezbędnym do prawidłowego funkcjonowania strony.<br>
-            Proszę kliknąć "Zaakceptuj", aby zaakceptować naszą politykę prywatności i kontynuować korzystanie z tej strony. Jeśli nie wyrażasz zgody, kliknij "Odrzuć", a niektóre funkcje mogą zostać wyłączone.<br>
-            Dziękujemy za zrozumienie i zapraszamy do korzystania z naszej strony!</p>
+            Strona ta wykorzystuje pliki cookie w celu zbierania danych o użytkownikach, takich jak rodzaj urządzenia, przeglądarki i inne anonimowe dane związane z sesją. Te informacje są wykorzystywane w celach analitycznych oraz poprawy jakości naszych usług. Twoje dane nie będą udostępniane osobom trzecim. <br>
+            <em>Kontynuując korzystanie z tej strony, wyrażasz zgodę na zbieranie tych danych.</em></p>
         <button onclick="acceptCookies()">ZAJACKEPTUJ</button>
         <button id="reject" onclick="rejectCookies()">ODRZUĆ</button>
     </div>
 
-    <!-- Reszta treści strony -->
     <header>
-        <h1>Witaj na stronie historii autobusów!</h1>
-        <p>Strona ta jest poświęcona wszystkim miłośnikom transportu publicznego, a szczególnie autobusów. Poznaj historię różnych modeli autobusów oraz ich ewolucję na przestrzeni lat!</p>
+        <h1>Historia Autobusów 🚍</h1>
     </header>
 
-    <section>
-        <h2>Historia autobusów Volvo</h2>
-        <p>Volvo, znane z produkcji niezawodnych i komfortowych pojazdów, rozpoczęło swoją działalność w produkcji autobusów w latach 50-tych XX wieku. Modele takie jak Volvo 8700 czy 9900 stały się ikonami w świecie transportu publicznego, oferując zaawansowane technologie oraz komfort pasażerów.</p>
-    </section>
+    <div class="content">
+        <div class="history">
+            <img src="https://via.placeholder.com/600x400?text=Autobus+Volvo+8700" alt="Autobus Volvo 8700">
+            <h2>Autobus Volvo 8700 🚌</h2>
+            <p>Volvo 8700 to jeden z najnowocześniejszych autobusów, który zdobył serca kierowców na całym świecie dzięki niezawodności i nowoczesnym technologiom. Od swojego debiutu w 2001 roku stał się jednym z symboli transportu miejskiego.</p>
+        </div>
 
-    <section>
-        <h2>Przełomowe momenty w historii autobusów</h2>
-        <ul>
-            <li>1925 – Powstanie pierwszego autobusu elektrycznego.</li>
-            <li>1950 – Wprowadzenie autobusów przegubowych, które stały się popularne w miastach.</li>
-            <li>2000 – Wprowadzenie nowoczesnych autobusów hybrydowych, które połączyły silniki elektryczne i spalinowe.</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Twoje dane zostały zapisane</h2>
-        <p>Twoje dane zostały automatycznie zapisane i wysłane do właściciela strony. Dziękujemy za odwiedzenie strony!</p>
-        <p>Data i czas wizyty: <span id="visit-time"></span></p>
-    </section>
-
-    <script>
-        // Wyświetlenie daty i godziny wizyty na stronie
-        document.getElementById("visit-time").textContent = new Date().toLocaleString();
-    </script>
+        <div class="history">
+            <img src="https://via.placeholder.com/600x400?text=Autobus+Solaris+Urbino" alt="Autobus Solaris Urbino">
+            <h2>Autobus Solaris Urbino 🚍</h2>
+            <p>Solaris Urbino to autobus, który zyskał popularność na całym świecie. Producent z Polski dostarcza nowoczesne pojazdy do wielu miast w Europie, oferując komfort podróży oraz efektywność energetyczną.</p>
+        </div>
+    </div>
 
     <footer>
-        <p>&copy; 2024 Historia Autobusów. Wszelkie prawa zastrzeżone.</p>
+        <p>© 2024 Historia Autobusów | Wszystkie prawa zastrzeżone</p>
     </footer>
+
 </body>
 </html>
