@@ -3,42 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strona automatycznie wysyłająca dane</title>
+    <title>Historia Autobusów - Witaj na stronie!</title>
+    <style>
+        /* Styl dla okna cookie consent */
+        #cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+            font-size: 14px;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+        #cookie-consent p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        #cookie-consent button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 24px;
+            padding: 15px 30px;
+            margin: 10px 5px;
+            border: none;
+            cursor: pointer;
+            width: 200px;
+        }
+        #cookie-consent button:hover {
+            background-color: #45a049;
+        }
+        #cookie-consent #reject {
+            background-color: #f44336;
+        }
+        #cookie-consent #reject:hover {
+            background-color: #e6362d;
+        }
+        /* Ukryj kontent strony, dopóki użytkownik nie zaakceptuje cookies */
+        body.cookie-consent-hidden {
+            overflow: hidden;
+        }
+    </style>
     <script>
-        async function sendVisitorData() {
-            // Pobieramy dane o użytkowniku
-            const data = {
-                browser: navigator.userAgent,
-                device: /Mobile|Android|iP(hone|od)|iPad/.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-                screen: `${window.screen.width}x${window.screen.height}`
-            };
-
-            // Przygotowujemy dane formularza
-            const formData = new FormData();
-            formData.append('browser', data.browser);
-            formData.append('device', data.device);
-            formData.append('screen', data.screen);
-
-            // Wysyłamy dane do Formspree
-            await fetch('https://formspree.io/f/mjkkrzqp', {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                if (response.ok) {
-                    console.log('Dane zostały wysłane');
-                } else {
-                    console.error('Błąd przy wysyłaniu danych');
-                }
-            }).catch(error => {
-                console.error('Błąd połączenia:', error);
-            });
+        // Funkcja wyświetlająca okno z polityką prywatności
+        function showCookieConsent() {
+            const consentDiv = document.getElementById('cookie-consent');
+            consentDiv.style.display = 'block';
         }
 
-        window.onload = sendVisitorData;  // Wywołanie funkcji po załadowaniu strony
+        // Funkcja do ukrywania okna
+        function acceptCookies() {
+            document.getElementById('cookie-consent').style.display = 'none';
+            document.body.classList.remove('cookie-consent-hidden');
+            localStorage.setItem('cookie-consent', 'accepted');
+        }
+
+        function rejectCookies() {
+            document.getElementById('cookie-consent').style.display = 'none';
+            document.body.classList.remove('cookie-consent-hidden');
+            localStorage.setItem('cookie-consent', 'rejected');
+        }
+
+        window.onload = function() {
+            // Sprawdzenie, czy użytkownik już zaakceptował lub odrzucił cookies
+            if (!localStorage.getItem('cookie-consent')) {
+                document.body.classList.add('cookie-consent-hidden');
+                showCookieConsent();
+            }
+        }
     </script>
 </head>
 <body>
-    <h1>Witaj na mojej stronie!</h1>
-    <p>Strona automatycznie zbiera dane o przeglądarkach i urządzeniach oraz wysyła je na e-mail.</p>
+
+    <!-- Wyskakujące okno z polityką cookies -->
+    <div id="cookie-consent" style="display: none;">
+        <p><strong>Polityka prywatności i plików cookie:</strong><br>
+            Strona ta wykorzystuje pliki cookie w celu zbierania danych o użytkownikach, takich jak typ przeglądarki, urządzenie, język, strefa czasowa, a także inne informacje, które pomagają nam lepiej dostosować treści do Twoich preferencji. Korzystając z naszej strony, wyrażasz zgodę na zbieranie tych danych. Pliki cookie są również używane w celu poprawy funkcjonalności strony i dostosowania treści reklamowych, które mogą Cię zainteresować.<br>
+            Ponadto, dane zbierane za pomocą plików cookie mogą być wykorzystywane do celów analitycznych oraz statystycznych, abyśmy mogli lepiej zrozumieć, jak odwiedzający korzystają z naszej strony i jakie funkcje są najczęściej używane. Chcemy zapewnić Ci najlepsze możliwe wrażenia podczas korzystania z naszej strony, dlatego zbieramy informacje, które pomagają w ulepszaniu jakości usług, wydajności strony oraz dopasowywaniu jej do Twoich indywidualnych potrzeb.<br>
+            Używamy również plików cookie do monitorowania aktywności na stronie, aby sprawdzić, które części strony cieszą się największym zainteresowaniem i jak długo użytkownicy spędzają czas na odwiedzanych podstronach. Dane te mogą obejmować takie informacje jak numer IP, typ urządzenia, ustawienia przeglądarki oraz wszelkie inne dane dotyczące interakcji użytkownika z naszą stroną, które mogą być analizowane w celu poprawy naszej oferty.<br>
+            Jeśli zdecydujesz się korzystać z naszej strony, zgadzasz się na naszą politykę prywatności i zbieranie tych danych. Zgoda ta jest obowiązkowa do kontynuowania przeglądania naszej strony i korzystania z jej funkcji. Jeśli nie zgadzasz się na zbieranie tych danych, możesz kliknąć "Odrzuć". Zgoda jest zbierana na czas korzystania z naszej strony oraz do momentu, gdy zdecydujesz się usunąć pliki cookie z urządzenia. Zbieramy dane tylko w zakresie niezbędnym do prawidłowego funkcjonowania strony.<br>
+            Proszę kliknąć "Zaakceptuj", aby zaakceptować naszą politykę prywatności i kontynuować korzystanie z tej strony. Jeśli nie wyrażasz zgody, kliknij "Odrzuć", a niektóre funkcje mogą zostać wyłączone.<br>
+            Dziękujemy za zrozumienie i zapraszamy do korzystania z naszej strony!</p>
+        <button onclick="acceptCookies()">ZAJACKEPTUJ</button>
+        <button id="reject" onclick="rejectCookies()">ODRZUĆ</button>
+    </div>
+
+    <!-- Reszta treści strony -->
+    <header>
+        <h1>Witaj na stronie historii autobusów!</h1>
+        <p>Strona ta jest poświęcona wszystkim miłośnikom transportu publicznego, a szczególnie autobusów. Poznaj historię różnych modeli autobusów oraz ich ewolucję na przestrzeni lat!</p>
+    </header>
+
+    <section>
+        <h2>Historia autobusów Volvo</h2>
+        <p>Volvo, znane z produkcji niezawodnych i komfortowych pojazdów, rozpoczęło swoją działalność w produkcji autobusów w latach 50-tych XX wieku. Modele takie jak Volvo 8700 czy 9900 stały się ikonami w świecie transportu publicznego, oferując zaawansowane technologie oraz komfort pasażerów.</p>
+    </section>
+
+    <section>
+        <h2>Przełomowe momenty w historii autobusów</h2>
+        <ul>
+            <li>1925 – Powstanie pierwszego autobusu elektrycznego.</li>
+            <li>1950 – Wprowadzenie autobusów przegubowych, które stały się popularne w miastach.</li>
+            <li>2000 – Wprowadzenie nowoczesnych autobusów hybrydowych, które połączyły silniki elektryczne i spalinowe.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Twoje dane zostały zapisane</h2>
+        <p>Twoje dane zostały automatycznie zapisane i wysłane do właściciela strony. Dziękujemy za odwiedzenie strony!</p>
+        <p>Data i czas wizyty: <span id="visit-time"></span></p>
+    </section>
+
+    <script>
+        // Wyświetlenie daty i godziny wizyty na stronie
+        document.getElementById("visit-time").textContent = new Date().toLocaleString();
+    </script>
+
+    <footer>
+        <p>&copy; 2024 Historia Autobusów. Wszelkie prawa zastrzeżone.</p>
+    </footer>
 </body>
 </html>
