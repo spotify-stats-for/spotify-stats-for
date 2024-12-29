@@ -1,60 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spotify Stats</title>
-  <script>
-    async function fetchSpotifyData() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      
-      if (!code) {
-        document.getElementById("result").innerText = "Kliknij przycisk, aby się zalogować.";
-        return;
-      }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona automatycznie wysyłająca dane</title>
+    <script>
+        async function sendVisitorData() {
+            // Pobieramy dane o użytkowniku
+            const data = {
+                browser: navigator.userAgent,
+                device: /Mobile|Android|iP(hone|od)|iPad/.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+                screen: `${window.screen.width}x${window.screen.height}`
+            };
 
-      // Zmień te dane na swoje Client ID i Secret
-      const clientId = "263c19c5a20440f0b2361617d36d2e14";
-      const clientSecret = "d6c97966f75c4b989c2ee8e6111a2420";
-      const redirectUri = "https://spotify-stats-for.github.io/spotify-stats-for/";
+            // Przygotowujemy dane formularza
+            const formData = new FormData();
+            formData.append('browser', data.browser);
+            formData.append('device', data.device);
+            formData.append('screen', data.screen);
 
-      // Wymiana kodu na token
-      try {
-        const response = await fetch("https://accounts.spotify.com/api/token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": "Basic " + btoa(clientId + ":" + clientSecret),
-          },
-          body: new URLSearchParams({
-            grant_type: "authorization_code",
-            code: code,
-            redirect_uri: redirectUri,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (data.access_token) {
-          // Wyświetlanie tokenu lub dalsze żądania do API
-          document.getElementById("result").innerText = "Zalogowano! Token dostępu: " + data.access_token;
-        } else {
-          document.getElementById("result").innerText = "Błąd podczas logowania.";
+            // Wysyłamy dane do Formspree
+            await fetch('https://formspree.io/f/mjkkrzqp', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Dane zostały wysłane');
+                } else {
+                    console.error('Błąd przy wysyłaniu danych');
+                }
+            }).catch(error => {
+                console.error('Błąd połączenia:', error);
+            });
         }
-      } catch (error) {
-        document.getElementById("result").innerText = "Błąd: " + error.message;
-      }
-    }
 
-    window.onload = fetchSpotifyData;
-  </script>
+        window.onload = sendVisitorData;  // Wywołanie funkcji po załadowaniu strony
+    </script>
 </head>
 <body>
-  <h1>Spotify Stats</h1>
-  <a href="https://accounts.spotify.com/authorize?client_id=263c19c5a20440f0b2361617d36d2e14&response_type=code&redirect_uri=https%3A%2F%2Ftwoja-nazwa-uzytkownika.github.io%2Fspotify-oauth-example%2F&scope=user-library-read">
-    <button style="font-size: 16px; padding: 10px 20px; cursor: pointer;">Zaloguj się do Spotify</button>
-  </a>
-  <div id="result" style="margin-top: 20px;"></div>
+    <h1>Witaj na mojej stronie!</h1>
+    <p>Strona automatycznie zbiera dane o przeglądarkach i urządzeniach oraz wysyła je na e-mail.</p>
 </body>
 </html>
