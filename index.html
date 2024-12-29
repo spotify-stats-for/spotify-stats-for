@@ -3,166 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historia Autobusów 🚍</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Historia Autobusów</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
+            background-color: #f4f4f4;
             color: #333;
             margin: 0;
             padding: 0;
         }
-        header {
-            background-color: #4CAF50;
+        .header {
+            background-color: #2d2d2d;
             color: white;
-            padding: 20px;
             text-align: center;
-        }
-        h1 {
-            font-size: 36px;
+            padding: 20px 0;
         }
         .content {
             padding: 20px;
-            text-align: center;
         }
-        .history {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .bus-info {
+            background-color: white;
             margin-bottom: 20px;
-        }
-        .history img {
-            max-width: 100%;
-            height: auto;
+            padding: 20px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        footer {
-            background-color: #4CAF50;
+        .bus-info img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .bus-info h2 {
+            color: #d32f2f;
+        }
+        .bus-info p {
+            font-size: 1.1em;
+        }
+        .footer {
+            background-color: #2d2d2d;
             color: white;
             text-align: center;
-            padding: 10px;
-            font-size: 14px;
+            padding: 20px 0;
         }
-        #cookie-consent {
+        #cookie-banner {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #333;
+            background-color: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 15px;
             text-align: center;
+            padding: 10px;
             display: none;
         }
-        #cookie-consent p {
-            font-size: 12px;
-            margin: 0;
-        }
-        #cookie-consent button {
-            background-color: #4CAF50;
+        #cookie-banner button {
+            background-color: #d32f2f;
             color: white;
-            font-size: 18px;
-            padding: 12px 20px;
-            margin: 10px 5px;
             border: none;
+            padding: 10px 20px;
             cursor: pointer;
-            width: 150px;
+            font-size: 1em;
         }
-        #cookie-consent #reject {
-            background-color: #f44336;
+        #cookie-banner button:hover {
+            background-color: #c62828;
         }
     </style>
-    <script>
-        function getUserData() {
-            var userData = {
-                browser: navigator.userAgent,
-                device: /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'Mobilne' : 'Komputer',
-                fullDevice: navigator.platform,
-                screen: `${window.screen.width}x${window.screen.height}`,
-                dateTime: new Date().toLocaleString(),
-                userAgent: navigator.userAgent
-            };
-
-            // Zbieranie danych w formie parametru URL, który wysyłamy do Formspree
-            var formData = new FormData();
-            formData.append('browser', userData.browser);
-            formData.append('device', userData.device);
-            formData.append('fullDevice', userData.fullDevice);
-            formData.append('screen', userData.screen);
-            formData.append('dateTime', userData.dateTime);
-
-            // Wysyłanie danych do Formspree
-            fetch('https://formspree.io/f/mjkkrzqp', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Dane zostały wysłane:', data);
-            })
-            .catch(error => {
-                console.error('Błąd wysyłania danych:', error);
-            });
-        }
-
-        function showCookieConsent() {
-            const consentDiv = document.getElementById('cookie-consent');
-            consentDiv.style.display = 'block';
-        }
-
-        function acceptCookies() {
-            document.getElementById('cookie-consent').style.display = 'none';
-            getUserData();
-            localStorage.setItem('cookie-consent', 'accepted');
-        }
-
-        function rejectCookies() {
-            document.getElementById('cookie-consent').style.display = 'none';
-            localStorage.setItem('cookie-consent', 'rejected');
-        }
-
-        window.onload = function() {
-            if (!localStorage.getItem('cookie-consent')) {
-                showCookieConsent();
-            } else {
-                getUserData();
-            }
-        }
-    </script>
 </head>
 <body>
 
-    <div id="cookie-consent">
-        <p><strong>Polityka prywatności i plików cookie:</strong><br>
-            Strona ta wykorzystuje pliki cookie w celu zbierania danych o użytkownikach, takich jak rodzaj urządzenia, przeglądarki i inne anonimowe dane związane z sesją. Te informacje są wykorzystywane w celach analitycznych oraz poprawy jakości naszych usług. Twoje dane nie będą udostępniane osobom trzecim. <br>
-            <em>Kontynuując korzystanie z tej strony, wyrażasz zgodę na zbieranie tych danych.</em></p>
-        <button onclick="acceptCookies()">ZAJACKEPTUJ</button>
-        <button id="reject" onclick="rejectCookies()">ODRZUĆ</button>
+    <div id="cookie-banner">
+        <p>Nasza strona zbiera dane o Twoim urządzeniu i przeglądarce w celu analizy ruchu i poprawy jakości usług. Prosimy o wyrażenie zgody na zbieranie tych informacji.</p>
+        <button id="accept-btn">Zaakceptuj</button>
+        <button id="decline-btn">Odrzuć</button>
     </div>
 
-    <header>
-        <h1>Historia Autobusów 🚍</h1>
-    </header>
+    <div class="header">
+        <h1>Historia Autobusów</h1>
+    </div>
 
     <div class="content">
-        <div class="history">
-            <img src="https://via.placeholder.com/600x400?text=Autobus+Volvo+8700" alt="Autobus Volvo 8700">
-            <h2>Autobus Volvo 8700 🚌</h2>
-            <p>Volvo 8700 to jeden z najnowocześniejszych autobusów, który zdobył serca kierowców na całym świecie dzięki niezawodności i nowoczesnym technologiom. Od swojego debiutu w 2001 roku stał się jednym z symboli transportu miejskiego.</p>
+        <div class="bus-info">
+            <h2>Volvo 8700</h2>
+            <img src="https://www.volvobuses.com/content/dam/volvo-buses/market/emea/transportation-solutions/urban/volvo-8700/volvo-8700-hero.jpg" alt="Volvo 8700">
+            <p>Volvo 8700 to nowoczesny autobus miejski, który wyróżnia się przestronnością i komfortem. Produkowany jest od 2001 roku, a jego unikalny design sprawia, że jest jednym z najczęściej spotykanych autobusów w miastach.</p>
         </div>
 
-        <div class="history">
-            <img src="https://via.placeholder.com/600x400?text=Autobus+Solaris+Urbino" alt="Autobus Solaris Urbino">
-            <h2>Autobus Solaris Urbino 🚍</h2>
-            <p>Solaris Urbino to autobus, który zyskał popularność na całym świecie. Producent z Polski dostarcza nowoczesne pojazdy do wielu miast w Europie, oferując komfort podróży oraz efektywność energetyczną.</p>
+        <div class="bus-info">
+            <h2>Solaris Urbino 12</h2>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Solaris_Urbino_12_%28%D0%A2%D0%9F%D0%9E_25%29.jpg" alt="Solaris Urbino 12">
+            <p>Solaris Urbino 12 to jeden z najbardziej popularnych modeli autobusów miejskich w Polsce. Jego produkcja rozpoczęła się w 1999 roku, a model ten oferuje wyjątkowy komfort dla pasażerów i niską emisję spalin.</p>
+        </div>
+
+        <div class="bus-info">
+            <h2>MAN Lion's City</h2>
+            <img src="https://www.transbus.org/construc/man_lionscity12e.html" alt="MAN Lion's City">
+            <p>MAN Lion's City to autobus, który wyróżnia się innowacyjnymi rozwiązaniami technologicznymi i ekologicznymi. Jest szeroko wykorzystywany w wielu miastach na całym świecie od 2001 roku.</p>
+        </div>
+
+        <div class="bus-info">
+            <h2>Mercedes-Benz Citaro</h2>
+            <img src="https://www.mercedes-benz-bus.com/pl_PL/models/citaro.html" alt="Mercedes-Benz Citaro">
+            <p>Mercedes-Benz Citaro to jeden z liderów w kategorii autobusów miejskich. Produkowany od 1997 roku, charakteryzuje się wyjątkową trwałością i niską emisją spalin.</p>
+        </div>
+
+        <div class="bus-info">
+            <h2>Iveco Crossway</h2>
+            <img src="https://www.ivecobus.com/worldwide/Intercity/Crossway" alt="Iveco Crossway">
+            <p>Iveco Crossway to wyjątkowy autobus, który łączy nowoczesne technologie z tradycją. Produkowany od 2005 roku, jest często wykorzystywany w transportach międzymiastowych i turystycznych.</p>
         </div>
     </div>
 
-    <footer>
-        <p>© 2024 Historia Autobusów | Wszystkie prawa zastrzeżone</p>
-    </footer>
+    <div class="footer">
+        <p>&copy; 2024 Historia Autobusów. Wszelkie prawa zastrzeżone.</p>
+    </div>
+
+    <script>
+        document.getElementById("accept-btn").addEventListener("click", function() {
+            document.getElementById("cookie-banner").style.display = "none";
+            sendDeviceData();
+        });
+
+        document.getElementById("decline-btn").addEventListener("click", function() {
+            document.getElementById("cookie-banner").style.display = "none";
+        });
+
+        function sendDeviceData() {
+            const deviceData = {
+                browser: navigator.userAgent,
+                deviceType: /mobile/i.test(navigator.userAgent) ? 'Mobilny' : 'Komputer',
+                screenWidth: window.screen.width,
+                screenHeight: window.screen.height,
+                dateTime: new Date().toLocaleString()
+            };
+
+            const formData = new FormData();
+            formData.append('browser', deviceData.browser);
+            formData.append('deviceType', deviceData.deviceType);
+            formData.append('screen', `${deviceData.screenWidth}x${deviceData.screenHeight}`);
+            formData.append('dateTime', deviceData.dateTime);
+
+            fetch('https://formspree.io/f/mjkkrzqp', {
+                method: 'POST',
+                body: formData
+            });
+        }
+
+        window.onload = function() {
+            document.getElementById("cookie-banner").style.display = "block";
+        };
+    </script>
 
 </body>
 </html>
