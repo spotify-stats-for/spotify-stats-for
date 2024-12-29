@@ -3,57 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spotify OAuth Example</title>
-</head>
-<body>
-  <h1>Spotify OAuth Example</h1>
-  <a href="#" id="loginButton">Login with Spotify</a>
-
+  <title>Spotify Stats</title>
   <script>
-    const clientId = '263c19c5a20440f0b2361617d36d2e14';
-    const redirectUri = 'https://your-username.github.io/spotify-oauth-example/callback';  // Zastąp odpowiednim adresem
-    const authUrl = 'https://accounts.spotify.com/authorize';
-    const scopes = 'user-library-read';
+    async function fetchSpotifyData() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      
+      if (!code) {
+        document.getElementById("result").innerText = "Kliknij przycisk, aby się zalogować.";
+        return;
+      }
 
-    const loginButton = document.getElementById('loginButton');
+      // Zmień te dane na swoje Client ID i Secret
+      const clientId = "263c19c5a20440f0b2361617d36d2e14";
+      const clientSecret = "d6c97966f75c4b989c2ee8e6111a2420";
+      const redirectUri = "https://twoja-nazwa-uzytkownika.github.io/spotify-oauth-example/";
 
-    loginButton.addEventListener('click', () => {
-      const authLink = `${authUrl}?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
-      window.location.href = authLink;
-    });
+      // Wymiana kodu na token
+      try {
+        const response = await fetch("https://accounts.spotify.com/api/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": "Basic " + btoa(clientId + ":" + clientSecret),
+          },
+          body: new URLSearchParams({
+            grant_type: "authorization_code",
+            code: code,
+            redirect_uri: redirectUri,
+          }),
+        });
 
-    // Obsługa callbacku
-    if (window.location.search.includes('code=')) {
-      const code = new URLSearchParams(window.location.search).get('code');
-      fetchToken(code);
-    }
+        const data = await response.json();
 
-    async function fetchToken(code) {
-      const clientSecret = 'd6c97966f75c4b989c2ee8e6111a2420';
-      const tokenUrl = 'https://accounts.spotify.com/api/token';
-      const base64Credentials = btoa(`${clientId}:${clientSecret}`);
-
-      const response = await fetch(tokenUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Basic ${base64Credentials}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-          grant_type: 'authorization_code',
-          code: code,
-          redirect_uri: redirectUri
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert(`Access Token: ${data.access_token}\nRefresh Token: ${data.refresh_token}`);
-      } else {
-        alert('Error: ' + data.error_description);
+        if (data.access_token) {
+          // Wyświetlanie tokenu lub dalsze żądania do API
+          document.getElementById("result").innerText = "Zalogowano! Token dostępu: " + data.access_token;
+        } else {
+          document.getElementById("result").innerText = "Błąd podczas logowania.";
+        }
+      } catch (error) {
+        document.getElementById("result").innerText = "Błąd: " + error.message;
       }
     }
+
+    window.onload = fetchSpotifyData;
   </script>
+</head>
+<body>
+  <h1>Spotify Stats</h1>
+  <a href="https://accounts.spotify.com/authorize?client_id=263c19c5a20440f0b2361617d36d2e14&response_type=code&redirect_uri=https%3A%2F%2Ftwoja-nazwa-uzytkownika.github.io%2Fspotify-oauth-example%2F&scope=user-library-read">
+    <button style="font-size: 16px; padding: 10px 20px; cursor: pointer;">Zaloguj się do Spotify</button>
+  </a>
+  <div id="result" style="margin-top: 20px;"></div>
 </body>
 </html>
