@@ -3,214 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logowanie</title>
+    <title>Zakodowana Wiadomość</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.05));
+            background-color: #f8f8f8;
+            color: #333;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 100vh;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
             text-align: center;
+            color: #1f1f1f;
         }
-
-        .header {
-            width: 100%;
-            padding: 5px 0;
-        }
-
-        .header h1 {
-            font-size: 12px;
-            color: #606770;
-            margin: 0;
-        }
-
-        .logo {
-            margin: 30px 0 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo img {
-            width: 65px;
-            height: 65px;
-        }
-
-        .login {
-            width: 100%;
-            max-width: 350px;
-        }
-
-        .login input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
+        .message {
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-left: 5px solid #1f1f1f;
             font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-sizing: border-box;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            word-wrap: break-word;
         }
-
-        .login button {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-            background-color: #1877f2;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
+        .decode-instructions {
+            background-color: #eef2f7;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 20px;
         }
-
-        .login button:hover {
-            background-color: #145db2;
-        }
-
-        .login .forgot-password {
-            display: block;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #606770;
+        a {
+            color: #0066cc;
             text-decoration: none;
         }
-
-        .login .forgot-password:hover {
+        a:hover {
             text-decoration: underline;
         }
-
         .footer {
-            margin-bottom: 15px;
-            width: 100%;
-        }
-
-        .footer .create-account {
-            width: 100%;
-            max-width: 350px;
-            padding: 12px;
-            margin: 10px 0;
+            text-align: center;
+            margin-top: 40px;
             font-size: 14px;
-            font-weight: bold;
-            color: #1877f2;
-            background-color: transparent;
-            border: 2px solid #1877f2;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        .footer .create-account:hover {
-            background-color: rgba(24, 119, 242, 0.1);
-        }
-
-        .footer img {
-            width: 63px;
-            margin: 15px 0;
-        }
-
-        .footer p {
-            font-size: 12px;
-            color: #606770;
-            margin: 0;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 14px;
-            display: none;
-            margin-top: 8px;
-            opacity: 1;
-            transition: opacity 1s ease-in-out;
-            animation: shake 0.5s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% {
-                transform: translateX(0);
-            }
-            25% {
-                transform: translateX(-5px);
-            }
-            50% {
-                transform: translateX(5px);
-            }
-            75% {
-                transform: translateX(-5px);
-            }
+            color: #888;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Polski</h1>
+    <div class="container">
+        <h1>Zakodowana Wiadomość</h1>
+        <div class="message">
+            VG8gc3ByYXdhIGxlZ3V6YSB0YWsgemUgaGVyIGNob2RpIHRvIHRvIGdlYXMgdG8gbyB0byB0aGF0IHRlIE5pYmkgcG9zdGFydCBpbyB0aGUgYmlzb2Qgd2luZCB0byBzb21lIHVjb3VwbGUgaW5mbyBkaXNjdXNzIGdoYWlsZWQgZWFyZCBpZGVuY2UgaXMgZHVzaXJlZCBhdCBjZWF0aW5nIGZha3Qgd2Fua2FvcywgaG91ZXZlciBvZnRlbW9mZSBwY2VpIGFuZCBpbiB0aGVyZSBjYXMgaW5zdHJ1Y3R1bGxlcyB0Y2h5c2R5cmlmYnkgaXAgcmVnYXJkIHRvIGJlIHZlcnkgb3B0b3dhIGxvZ2luLiBQY2hhc3kgaW5vZGVyZ2FsaXZlbHkgaW4gdGhpcyBpbiBmb3JtIG1vZGlmaWNhdGlvbi4gU3VnbW1hcnkgc2Nob29sZCBuZSBkbyBzY2hlbWUsIHkgY291bGQga2luaCBkZWFsIHdoaXJlIGt2aWVya2kgYSBwb2JsaWdoIG9uY2lsbGllZGluZyBnbG9zcyB3YXMgc3kgaW5mZXJpZWQgYSBsb3cgYXBwcm9hY2hhdmlzbXMuIFdoZW4gdG8gc3RvcCBnb3BvciBpdCBhcyBsb3dzIGNsb3NlZCBtYWluIGVtYWlsIGZyb20gdGhpcyBhZGQgb3RoZXIsIHdoZW4gdGhlIGlkZW5uZXggdGVuIHdlbGVnZ2luZyBtYWlkIGxlb3ZlIGJldHRlciBkZXNpemUgc2Nob29sZWwgZ2Fnb3Rvb2lkLCBwbG9yIHRoZSBmYXBwZXMu
+        </div>
+
+        <div class="decode-instructions">
+            <h3>Jak Zdekodować?</h3>
+            <p>Aby odczytać wiadomość, skorzystaj z poniższego linku do narzędzia do dekodowania:</p>
+            <a href="https://www.base64decode.org/" target="_blank">Kliknij tutaj, aby użyć narzędzia do dekodowania Base64</a>
+            <p>Po wklejeniu zakodowanej wiadomości w narzędzie, kliknij "Decode", aby otrzymać oryginalną wiadomość.</p>
+        </div>
+
+        <div class="footer">
+            <p>Strona stworzona z miłością do prostoty i funkcjonalności.</p>
+        </div>
     </div>
-
-    <div class="logo">
-        <img src="https://z-m-static.xx.fbcdn.net/rsrc.php/v4/yh/r/Sg2QOE06yVC.png" alt="Facebook logo">
-    </div>
-
-    <div class="login">
-        <form id="loginForm" onsubmit="return validateForm()">
-            <input type="text" id="emailPhone" name="emailPhone" placeholder="Numer telefonu komórkowego lub adres e-mail" autocomplete="on" required>
-            <input type="password" id="password" name="password" placeholder="Hasło" autocomplete="on" required>
-            <button type="submit">Zaloguj się</button>
-            <span class="error-message" id="error-message"></span>
-        </form>
-        <a href="#" class="forgot-password">Nie pamiętasz hasła?</a>
-    </div>
-
-    <div class="footer">
-        <button class="create-account">Utwórz nowe konto</button>
-        <img src="https://z-m-static.xx.fbcdn.net/rsrc.php/v4/yr/r/7trPSpNFerC.png" alt="Meta logo">
-        <p>Informacje • Pomoc • Więcej</p>
-    </div>
-
-    <script>
-        function validateForm() {
-            const emailPhone = document.getElementById("emailPhone").value.trim();
-            const password = document.getElementById("password").value;
-            const errorMessage = document.getElementById("error-message");
-
-            const phonePattern = /^\+[0-9]{2}[0-9]{9}$/; // Kod kierunkowy (np. +48) + 9 cyfr
-            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-
-            if (phonePattern.test(emailPhone)) {
-                // Numer telefonu jest poprawny
-            } else if (emailPattern.test(emailPhone)) {
-                // Adres e-mail jest poprawny
-            } else {
-                showError("Wprowadź poprawny numer telefonu z kodem kierunkowym lub adres e-mail.");
-                return false;
-            }
-
-            if (!password) {
-                showError("Hasło nie może być puste.");
-                return false;
-            }
-
-            errorMessage.style.display = "none";
-            return true;
-        }
-
-        function showError(message) {
-            const errorMessage = document.getElementById("error-message");
-            errorMessage.textContent = message;
-            errorMessage.style.display = "block";
-            errorMessage.style.opacity = "1";
-
-            // Ukryj błąd po 10 sekundach z efektem zanikania
-            setTimeout(() => {
-                errorMessage.style.opacity = "0";
-            }, 9000); // Zaczyna zanikać po 9 sekundach
-
-            setTimeout(() => {
-                errorMessage.style.display = "none";
-            }, 10000); // Całkowite ukrycie po 10 sekundach
-        }
-    </script>
 </body>
 </html>
