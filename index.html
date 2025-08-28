@@ -1,107 +1,227 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Strona została usunięta, zniszczona i ukryta. Artykuł o tym, co się stało.">
-    <meta name="author" content="Twoje Imię">
-    <title>Strona Usunięta - Zniknęła Bez Śladu</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            text-align: center;
-        }
-        .container {
-            width: 80%;
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 40px;
-            background-color: #1a1a1a;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-        }
-        h1 {
-            color: #ff3333;
-            font-size: 3em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-        h2 {
-            color: #ff6600;
-            font-size: 2em;
-            margin-top: 20px;
-            text-transform: uppercase;
-        }
-        p {
-            font-size: 18px;
-            color: #ccc;
-            margin: 15px 0;
-            line-height: 1.8;
-        }
-        .highlight {
-            color: #ff0033;
-            font-weight: bold;
-        }
-        .code-message {
-            background-color: #222;
-            color: #ffcc00;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 20px;
-            margin-top: 30px;
-            border-radius: 5px;
-            font-size: 1.1em;
-        }
-        .instructions {
-            margin-top: 30px;
-            background-color: #333;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .instructions a {
-            color: #ffcc00;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .instructions a:hover {
-            text-decoration: underline;
-        }
-        .footer {
-            margin-top: 50px;
-            font-size: 14px;
-            color: #888;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Koleje brytyjskie — tabor i klasy (zaawansowane)</title>
+  <meta name="description" content="Rozszerzony, elegancki przewodnik o najpopularniejszych klasach taboru w Wielkiej Brytanii: 730/0, 555, 777, 68, 801/1, HST (Class 43) — z galerią i czytelnym układem." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f7fafc; --card:#ffffff; --muted:#6b7280; --heading:#0f1724; --accent:#2563eb; --glass:rgba(255,255,255,.6);
+      --radius:14px; --maxw:1100px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--heading);line-height:1.55}
+    .wrap{max-width:var(--maxw);margin:40px auto;padding:28px}
+    header{display:flex;gap:18px;align-items:center}
+    .logo{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;box-shadow:0 10px 30px rgba(37,99,235,.12)}
+    h1{margin:0;font-size:1.45rem}
+    .lead{color:var(--muted);margin-top:6px}main{display:grid;grid-template-columns:1fr 340px;gap:22px;margin-top:24px}
+.panel{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:0 12px 30px rgba(15,23,42,.06)}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+.hero-figure{border-radius:12px;overflow:hidden}
+.hero-figure img{display:block;width:100%;height:auto}
+.hero-caption{padding-top:10px;color:var(--muted);font-size:0.95rem}
+
+/* Classes grid */
+.classes{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.class-card{display:flex;gap:12px;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,.04);align-items:flex-start}
+.thumb{width:84px;height:56px;border-radius:8px;overflow:hidden;flex:0 0 84px}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.class-meta h3{margin:0;font-size:1rem}
+.class-meta p{margin:6px 0 0;color:var(--muted);font-size:0.92rem}
+
+/* Specs table */
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{padding:10px;border-bottom:1px solid rgba(15,23,42,.04);text-align:left}
+th{font-weight:600;color:var(--muted);font-size:0.95rem}
+
+/* Gallery */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.gallery button{border:0;padding:0;background:transparent;cursor:pointer;border-radius:8px;overflow:hidden}
+.gallery img{width:100%;height:120px;object-fit:cover;display:block}
+
+/* Sidebar */
+.sidebar .small{color:var(--muted);font-size:0.95rem}
+.pill{display:inline-block;background:#eef2ff;color:#1e40af;padding:6px 10px;border-radius:999px;font-weight:600;font-size:0.85rem}
+.meta-list{margin-top:12px;display:grid;gap:8px}
+
+footer{margin-top:20px;color:var(--muted);font-size:0.9rem;text-align:center}
+
+@media (max-width:980px){main{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.classes{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}}
+
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Strona Została Usunięta</h1>
-        <p>Wszystkie treści, które były kiedyś dostępne na tej stronie, zostały usunięte w tajemniczych okolicznościach. Ta strona nie istnieje już w swojej pierwotnej formie.</p>
-        <p><span class="highlight">Dlaczego to się stało?</span><br>
-        W wyniku nieprzewidzianych wydarzeń, zawartość została celowo ukryta i zniszczona. To, co kiedyś było dostępne, już nie istnieje, a wszystkie ślady zostały starannie usunięte. Dlaczego? Tego nie możemy powiedzieć. Nie ma już żadnych informacji dostępnych na ten temat.</p>
+  <div class="wrap">
+    <header>
+      <div class="logo" aria-hidden>BR</div>
+      <div>
+        <h1>Koleje brytyjskie — szczegóły taboru</h1>
+        <div class="lead">Zwięzła, elegancka prezentacja najpopularniejszych klas taboru w UK: 730/0, 555, 777, 68, 801/1 oraz HST (Class 43). Galeria z lazy-loading i prosty lightbox.</div>
+      </div>
+    </header><main>
+  <div>
+    <section class="panel hero">
+      <figure class="hero-figure">
+        <!-- Placeholder image: zamień na prawdziwe zdjęcie z Wikimedia/Źródła przewoźników -->
+        <img src="https://via.placeholder.com/900x420?text=Koleje+brytyjskie+—+tabor" alt="Przykładowe zdjęcie taboru — placeholder" loading="lazy">
+      </figure>
+      <aside style="align-self:start">
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+            <div>
+              <div class="pill">Klasy: 730/0 · 555 · 777 · 68 · 801/1 · HST</div>
+            </div>
+            <div style="text-align:right;color:var(--muted);font-size:0.9rem">Aktualność: demonstracja kodu</div>
+          </div>
 
-        <h2>Co się działo?</h2>
-        <p>To, co było kiedyś zapisane, teraz zostało całkowicie zatarte. Żadne dane nie zostały zachowane, ani nie będzie już można ich odzyskać. Być może ktoś próbował zapobiec tej sytuacji, ale nie udało się. Każda próba uzyskania dostępu kończy się niepowodzeniem.</p>
-
-        <div class="code-message">
-            <p><strong>Zakodowana Wiadomość:</strong></p>
-            <p>VGhpcyBzaXR1YWNqYSBmaW5pdCwgd2lzb3VtYSBnb3dhcmUgZWZmZWN0aXZub3MlMjBsb2dpY2gtbWlzdG9yeSB6YXN0YW5rYS4gVG8gaW5mbHVlbmNlLCBjb250ZW50IGlzdCBoYXBwZW5lZCBhbmQgZGVzdHJveSBpbiBhd2FsdWxvcmVtIG9jdHVraW93LCBhcyBpc3MgZGVmaW5pdGl2ZSBmb3JtYSB0byBiZSBjZWxlYnJhdGUgYW5kIHN1cHBvY3RlZCB3aXRob3V0IHByb2JsZW0uIFRoYW5rIHlvdSBhcmUgaW5mbHVlbmNlZCBpbiB0aGUgc2FtcGxlIGFjY2l2aXRpZXMgc3VjaCBhIGVuZGVkIG9yIGVsZWN0cmljIHRlc3QgdGV4dCwgYW5kIHlvdSBhcmUgZXhwbG9yaW5nIGl0LCB3aXRob3V0IGFuZCBkZWFsbCBpbiBsaWZlIHlvdXIgY2hhbGxlbmdlIHRvcnMgdGhpcyBsaW5rLg==</p>
+          <div class="meta-list">
+            <div class="small"><strong>Przeznaczenie:</strong> podmiejskie, regionalne, dalekobieżne i przewozy towarowe.</div>
+            <div class="small"><strong>Funkcje strony:</strong> galeria, porównanie cech, lazy-loading obrazów, dostępność.</div>
+            <div class="small"><strong>Źródła zdjęć:</strong> zalecam Wikimedia Commons lub oficjalne media operatorów — mogę podmienić.</div>
+          </div>
         </div>
+      </aside>
+    </section>
 
-        <div class="instructions">
-            <h3>Aby zrozumieć, co się stało...</h3>
-            <p>Jeśli chcesz odkryć, co było ukryte w tej wiadomości, skorzystaj z poniższego narzędzia, aby zdekodować zawartość.</p>
-            <a href="https://www.base64decode.org/" target="_blank">Kliknij tutaj, aby użyć narzędzia do dekodowania Base64</a>
-        </div>
+    <section class="panel" aria-labelledby="classes-title">
+      <h2 id="classes-title">Szczegółowe opisy klas</h2>
 
-        <div class="footer">
-            <p>Wszystkie próby odzyskania danych zakończone fiaskiem. Nic nie zostanie już ujawnione.</p>
+      <div class="classes" role="list">
+        <article class="class-card" role="listitem" aria-labelledby="c730">
+          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=730" alt="Class 730 (placeholder)" loading="lazy"></div>
+          <div class="class-meta">
+            <h3 id="c730">Class 730/0</h3>
+            <p>Familia Aventra (EMUs) — jednostki nowoczesne, przeznaczone do szybkich usług podmiejskich i regionalnych. Dostępne w konfiguracjach 3- i 5‑członowych; wyposażone w systemy oszczędzania energii i komfortowe wnętrza.</p>
+          </div>
+        </article>
+
+        <article class="class-card" role="listitem" aria-labelledby="c555">
+          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=555" alt="Class 555 (placeholder)" loading="lazy"></div>
+          <div class="class-meta">
+            <h3 id="c555">Class 555</h3>
+            <p>Jednostki dla sieci lokalnych — proste, niezawodne i zoptymalizowane pod częste zatrzymania. Popularne w mniejszych regionach z dużą liczbą przystanków.</p>
+          </div>
+        </article>
+
+        <article class="class-card" role="listitem" aria-labelledby="c777">
+          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=777" alt="Class 777 (placeholder)" loading="lazy"></div>
+          <div class="class-meta">
+            <h3 id="c777">Class 777</h3>
+            <p>Nowe EMU dla sieci miejskich (np. Merseyrail). Niska podłoga, dobra dostępność, wyposażenie pod monitoring i systemy informacyjne. Często wykonywane z myślą o szybkiej eksploatacji miejskiej.</p>
+          </div>
+        </article>
+
+        <article class="class-card" role="listitem" aria-labelledby="c68">
+          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=68" alt="Class 68 (placeholder)" loading="lazy"></div>
+          <div class="class-meta">
+            <h3 id="c68">Class 68</h3>
+            <p>Dieselowa lokomotywa uniwersalna — wykorzystywana zarówno w przewozach towarowych, jak i w pociągach pasażerskich w systemie push-pull. Przydatna na niezelektryfikowanych odcinkach.</p>
+          </div>
+        </article>
+
+        <article class="class-card" role="listitem" aria-labelledby="c801">
+          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=801" alt="Class 801 (placeholder)" loading="lazy"></div>
+          <div class="class-meta">
+            <h3 id="c801">Class 801/1</h3>
+            <p>Hitachi-built Azuma/EVUs — jednostki elektryczne dla dalekobieżnych, szybkich połączeń (np. LNER). Charakteryzują się dobrym przyspieszeniem i wysokim komfortem podróży.</p>
+          </div>
+        </article>
+
+        <article class="class-card" role="listitem" aria-labelledby="chst">
+          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=HST" alt="HST (Class 43) (placeholder)" loading="lazy"></div>
+          <div class="class-meta">
+            <h3 id="chst">HST — Class 43 (InterCity 125)</h3>
+            <p>Legendarny zestaw HST — tradycyjny napęd spalinowy, który przez dekady stanowił o szybkości i niezawodności brytyjskich połączeń międzymiastowych. Wiele egzemplarzy w modernizacjach nadal jest w użyciu.</p>
+          </div>
+        </article>
+      </div>
+
+      <div style="margin-top:16px">
+        <h2>Porównanie techniczne (wybrane)</h2>
+        <table aria-label="Porównanie klas">
+          <thead>
+            <tr><th>Klasa</th><th>Typ</th><th>Główne zastosowanie</th><th>Uwagi</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>730/0</td><td>EMU</td><td>Podmiejska / regionalna</td><td>Nowe Aventra; 3/5 członów</td></tr>
+            <tr><td>555</td><td>EMU</td><td>Regionalne</td><td>Proste, częste kursy</td></tr>
+            <tr><td>777</td><td>EMU</td><td>Miejskie</td><td>Niska podłoga, dostępność</td></tr>
+            <tr><td>68</td><td>Diesel loco</td><td>Towary / push-pull</td><td>Uniwersalna</td></tr>
+            <tr><td>801/1</td><td>EMU (Azuma)</td><td>Dalekobieżne</td><td>Wysoki komfort, szybka</td></tr>
+            <tr><td>HST (43)</td><td>DMU/DMU set</td><td>Międzymiastowe</td><td>Ikoniczny, wiele modernizacji</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:14px" class="panel">
+        <h2>Galeria (kliknij, by powiększyć)</h2>
+        <div class="gallery" id="gallery">
+          <!-- Każde zdjęcie to placeholder; można podmienić src na rzeczywiste linki do Wikimedia Commons lub CDN operatora -->
+          <button data-caption="Class 730 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=730+highres"><img src="https://via.placeholder.com/400x240?text=730" alt="Class 730 (mini)"></button>
+          <button data-caption="Class 555 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=555+highres"><img src="https://via.placeholder.com/400x240?text=555" alt="Class 555 (mini)"></button>
+          <button data-caption="Class 777 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=777+highres"><img src="https://via.placeholder.com/400x240?text=777" alt="Class 777 (mini)"></button>
+          <button data-caption="Class 68 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=68+highres"><img src="https://via.placeholder.com/400x240?text=68" alt="Class 68 (mini)"></button>
+          <button data-caption="Class 801 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=801+highres"><img src="https://via.placeholder.com/400x240?text=801" alt="Class 801 (mini)"></button>
+          <button data-caption="HST — Class 43 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=HST+highres"><img src="https://via.placeholder.com/400x240?text=HST" alt="HST (mini)"></button>
         </div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="sidebar">
+    <div class="panel">
+      <h3>Opcje rozbudowy</h3>
+      <ul style="margin-top:10px;color:var(--muted)">
+        <li>Podmiana placeholderów na zdjęcia z Wikimedia Commons (podam propozycje).</li>
+        <li>Dodanie lightboxu z pełnym opisem każdego zdjęcia.</li>
+        <li>Interaktywna mapa tras (Leaflet) i możliwość filtrowania klas po regionie.</li>
+      </ul>
     </div>
-</body>
+
+    <div class="panel" style="margin-top:12px">
+      <h3>Legenda i skróty</h3>
+      <p class="small" style="margin-top:8px">EMU — Electric Multiple Unit; DMU — Diesel Multiple Unit; HST — High Speed Train; LNR/LNER — operatorzy. Jeśli chcesz, dopiszę pełne specyfikacje techniczne (masa, prędkość, moc).</p>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <p>Gotowe — poprawiona, elegancka wersja z galerią i czytelną typografią. Napisz, jeśli chcesz, bym podmienił placeholdery na konkretnie wybrane zdjęcia (wskaż klasy/ujęcia) — podam linki i wstawię je.</p>
+</footer>
+
+  </div>  <script>
+    // Lazy-load thumbnails (data-src pattern) — proste
+    document.querySelectorAll('[data-src]').forEach(img=>{
+      const el = img;
+      el.setAttribute('loading','lazy');
+      // if element is <img> with data-src attribute
+      if(el.tagName=== 'IMG' && el.dataset.src){ el.src = el.dataset.src; }
+      // gallery buttons use data-src on button; handled in lightbox below
+    });
+
+    // Lightbox: very small, accessible
+    const gallery = document.getElementById('gallery');
+    let lb;
+    function openLightbox(src, caption){
+      if(lb) lb.remove();
+      lb = document.createElement('div');
+      lb.style.position='fixed';lb.style.inset=0;lb.style.background='rgba(0,0,0,.75)';lb.style.display='flex';lb.style.alignItems='center';lb.style.justifyContent='center';lb.style.zIndex=9999;
+      lb.innerHTML = `<div style="max-width:90%;max-height:90%;"><img src="${src}" alt="${caption}" style="max-width:100%;height:auto;display:block;border-radius:8px"><div style="color:#fff;margin-top:8px;text-align:center">${caption} <button id=lbClose style='margin-left:12px;padding:6px 10px;border-radius:6px;border:0;cursor:pointer'>Zamknij</button></div></div>`;
+      lb.addEventListener('click', e=>{ if(e.target===lb) lb.remove(); });
+      document.body.appendChild(lb);
+      document.getElementById('lbClose').addEventListener('click', ()=>lb.remove());
+    }
+
+    gallery.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        openLightbox(btn.dataset.src, btn.dataset.caption);
+      });
+    });
+  </script></body>
 </html>
