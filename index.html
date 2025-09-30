@@ -1,227 +1,177 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Koleje brytyjskie — tabor i klasy (zaawansowane)</title>
-  <meta name="description" content="Rozszerzony, elegancki przewodnik o najpopularniejszych klasach taboru w Wielkiej Brytanii: 730/0, 555, 777, 68, 801/1, HST (Class 43) — z galerią i czytelnym układem." />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#f7fafc; --card:#ffffff; --muted:#6b7280; --heading:#0f1724; --accent:#2563eb; --glass:rgba(255,255,255,.6);
-      --radius:14px; --maxw:1100px;
-    }
-    *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--heading);line-height:1.55}
-    .wrap{max-width:var(--maxw);margin:40px auto;padding:28px}
-    header{display:flex;gap:18px;align-items:center}
-    .logo{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;box-shadow:0 10px 30px rgba(37,99,235,.12)}
-    h1{margin:0;font-size:1.45rem}
-    .lead{color:var(--muted);margin-top:6px}main{display:grid;grid-template-columns:1fr 340px;gap:22px;margin-top:24px}
-.panel{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:0 12px 30px rgba(15,23,42,.06)}
-
-/* Hero */
-.hero{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
-.hero-figure{border-radius:12px;overflow:hidden}
-.hero-figure img{display:block;width:100%;height:auto}
-.hero-caption{padding-top:10px;color:var(--muted);font-size:0.95rem}
-
-/* Classes grid */
-.classes{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.class-card{display:flex;gap:12px;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,.04);align-items:flex-start}
-.thumb{width:84px;height:56px;border-radius:8px;overflow:hidden;flex:0 0 84px}
-.thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.class-meta h3{margin:0;font-size:1rem}
-.class-meta p{margin:6px 0 0;color:var(--muted);font-size:0.92rem}
-
-/* Specs table */
-table{width:100%;border-collapse:collapse;margin-top:12px}
-th,td{padding:10px;border-bottom:1px solid rgba(15,23,42,.04);text-align:left}
-th{font-weight:600;color:var(--muted);font-size:0.95rem}
-
-/* Gallery */
-.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.gallery button{border:0;padding:0;background:transparent;cursor:pointer;border-radius:8px;overflow:hidden}
-.gallery img{width:100%;height:120px;object-fit:cover;display:block}
-
-/* Sidebar */
-.sidebar .small{color:var(--muted);font-size:0.95rem}
-.pill{display:inline-block;background:#eef2ff;color:#1e40af;padding:6px 10px;border-radius:999px;font-weight:600;font-size:0.85rem}
-.meta-list{margin-top:12px;display:grid;gap:8px}
-
-footer{margin-top:20px;color:var(--muted);font-size:0.9rem;text-align:center}
-
-@media (max-width:980px){main{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.classes{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}}
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackjack Symulator – Licznik Krupiera</title>
+<style>
+body { font-family: Arial, sans-serif; background: #2b2b2b; color: #fff; text-align: center; margin:0; padding:0;}
+h1 { margin: 10px 0; }
+#table { margin: 20px auto; width: 90%; max-width: 800px; min-height: 250px; background: #0b3d0b; border-radius: 15px; padding: 15px; position: relative; }
+.hand-container { margin: 10px 0; display: flex; justify-content: center; flex-wrap: wrap; min-height: 60px; }
+.card { width: 60px; height: 90px; border-radius: 8px; margin: 5px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #000; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: transform 0.5s, opacity 0.5s; transform-style: preserve-3d; position: relative; }
+.card.hidden { background: #444; color: #444; cursor: pointer; }
+.card.heart, .card.diamond { color: red; }
+.card.club, .card.spade { color: black; }
+.controls button { margin: 5px; padding: 10px 15px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background: #444; color: #fff; transition: 0.2s; }
+.controls button:hover { background: #666; }
+#message { margin-top: 15px; font-weight: bold; font-size: 18px; }
+#strategy { margin-top: 10px; font-size: 16px; color: #ffd700; cursor: pointer; }
+#dealer-value { margin-top:5px; font-size:16px; color:#ffeb3b; }
+#history { margin-top: 15px; font-size: 14px; max-width: 800px; margin-left:auto;margin-right:auto;}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo" aria-hidden>BR</div>
-      <div>
-        <h1>Koleje brytyjskie — szczegóły taboru</h1>
-        <div class="lead">Zwięzła, elegancka prezentacja najpopularniejszych klas taboru w UK: 730/0, 555, 777, 68, 801/1 oraz HST (Class 43). Galeria z lazy-loading i prosty lightbox.</div>
-      </div>
-    </header><main>
-  <div>
-    <section class="panel hero">
-      <figure class="hero-figure">
-        <!-- Placeholder image: zamień na prawdziwe zdjęcie z Wikimedia/Źródła przewoźników -->
-        <img src="https://via.placeholder.com/900x420?text=Koleje+brytyjskie+—+tabor" alt="Przykładowe zdjęcie taboru — placeholder" loading="lazy">
-      </figure>
-      <aside style="align-self:start">
-        <div class="panel">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-            <div>
-              <div class="pill">Klasy: 730/0 · 555 · 777 · 68 · 801/1 · HST</div>
-            </div>
-            <div style="text-align:right;color:var(--muted);font-size:0.9rem">Aktualność: demonstracja kodu</div>
-          </div>
 
-          <div class="meta-list">
-            <div class="small"><strong>Przeznaczenie:</strong> podmiejskie, regionalne, dalekobieżne i przewozy towarowe.</div>
-            <div class="small"><strong>Funkcje strony:</strong> galeria, porównanie cech, lazy-loading obrazów, dostępność.</div>
-            <div class="small"><strong>Źródła zdjęć:</strong> zalecam Wikimedia Commons lub oficjalne media operatorów — mogę podmienić.</div>
-          </div>
-        </div>
-      </aside>
-    </section>
+<h1>Blackjack Symulator – Licznik Krupiera</h1>
 
-    <section class="panel" aria-labelledby="classes-title">
-      <h2 id="classes-title">Szczegółowe opisy klas</h2>
+<div id="table">
+  <div><strong>Krupier:</strong></div>
+  <div class="hand-container" id="dealer-hand"></div>
+  <div id="dealer-value">Suma odkrytych kart: 0</div>
 
-      <div class="classes" role="list">
-        <article class="class-card" role="listitem" aria-labelledby="c730">
-          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=730" alt="Class 730 (placeholder)" loading="lazy"></div>
-          <div class="class-meta">
-            <h3 id="c730">Class 730/0</h3>
-            <p>Familia Aventra (EMUs) — jednostki nowoczesne, przeznaczone do szybkich usług podmiejskich i regionalnych. Dostępne w konfiguracjach 3- i 5‑członowych; wyposażone w systemy oszczędzania energii i komfortowe wnętrza.</p>
-          </div>
-        </article>
+  <div><strong>Ty:</strong></div>
+  <div class="hand-container" id="player-hand"></div>
+</div>
 
-        <article class="class-card" role="listitem" aria-labelledby="c555">
-          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=555" alt="Class 555 (placeholder)" loading="lazy"></div>
-          <div class="class-meta">
-            <h3 id="c555">Class 555</h3>
-            <p>Jednostki dla sieci lokalnych — proste, niezawodne i zoptymalizowane pod częste zatrzymania. Popularne w mniejszych regionach z dużą liczbą przystanków.</p>
-          </div>
-        </article>
+<div class="controls">
+  <button onclick="hit()">Hit</button>
+  <button onclick="stand()">Stand</button>
+  <button onclick="doubleBet()">Double</button>
+  <button onclick="split()">Split</button>
+</div>
 
-        <article class="class-card" role="listitem" aria-labelledby="c777">
-          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=777" alt="Class 777 (placeholder)" loading="lazy"></div>
-          <div class="class-meta">
-            <h3 id="c777">Class 777</h3>
-            <p>Nowe EMU dla sieci miejskich (np. Merseyrail). Niska podłoga, dobra dostępność, wyposażenie pod monitoring i systemy informacyjne. Często wykonywane z myślą o szybkiej eksploatacji miejskiej.</p>
-          </div>
-        </article>
+<div id="strategy">Pokaż podpowiedź</div>
+<div id="message"></div>
+<div id="history">Historia: </div>
 
-        <article class="class-card" role="listitem" aria-labelledby="c68">
-          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=68" alt="Class 68 (placeholder)" loading="lazy"></div>
-          <div class="class-meta">
-            <h3 id="c68">Class 68</h3>
-            <p>Dieselowa lokomotywa uniwersalna — wykorzystywana zarówno w przewozach towarowych, jak i w pociągach pasażerskich w systemie push-pull. Przydatna na niezelektryfikowanych odcinkach.</p>
-          </div>
-        </article>
+<script>
+const suits = ['♠','♥','♦','♣'];
+const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
-        <article class="class-card" role="listitem" aria-labelledby="c801">
-          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=801" alt="Class 801 (placeholder)" loading="lazy"></div>
-          <div class="class-meta">
-            <h3 id="c801">Class 801/1</h3>
-            <p>Hitachi-built Azuma/EVUs — jednostki elektryczne dla dalekobieżnych, szybkich połączeń (np. LNER). Charakteryzują się dobrym przyspieszeniem i wysokim komfortem podróży.</p>
-          </div>
-        </article>
+let deck = [], playerHands = [], currentHandIndex = 0, dealerHand = [];
+let playerTurn = true, history = [], strategyVisible=false;
 
-        <article class="class-card" role="listitem" aria-labelledby="chst">
-          <div class="thumb"><img data-src="https://via.placeholder.com/240x160?text=HST" alt="HST (Class 43) (placeholder)" loading="lazy"></div>
-          <div class="class-meta">
-            <h3 id="chst">HST — Class 43 (InterCity 125)</h3>
-            <p>Legendarny zestaw HST — tradycyjny napęd spalinowy, który przez dekady stanowił o szybkości i niezawodności brytyjskich połączeń międzymiastowych. Wiele egzemplarzy w modernizacjach nadal jest w użyciu.</p>
-          </div>
-        </article>
-      </div>
-
-      <div style="margin-top:16px">
-        <h2>Porównanie techniczne (wybrane)</h2>
-        <table aria-label="Porównanie klas">
-          <thead>
-            <tr><th>Klasa</th><th>Typ</th><th>Główne zastosowanie</th><th>Uwagi</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>730/0</td><td>EMU</td><td>Podmiejska / regionalna</td><td>Nowe Aventra; 3/5 członów</td></tr>
-            <tr><td>555</td><td>EMU</td><td>Regionalne</td><td>Proste, częste kursy</td></tr>
-            <tr><td>777</td><td>EMU</td><td>Miejskie</td><td>Niska podłoga, dostępność</td></tr>
-            <tr><td>68</td><td>Diesel loco</td><td>Towary / push-pull</td><td>Uniwersalna</td></tr>
-            <tr><td>801/1</td><td>EMU (Azuma)</td><td>Dalekobieżne</td><td>Wysoki komfort, szybka</td></tr>
-            <tr><td>HST (43)</td><td>DMU/DMU set</td><td>Międzymiastowe</td><td>Ikoniczny, wiele modernizacji</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div style="margin-top:14px" class="panel">
-        <h2>Galeria (kliknij, by powiększyć)</h2>
-        <div class="gallery" id="gallery">
-          <!-- Każde zdjęcie to placeholder; można podmienić src na rzeczywiste linki do Wikimedia Commons lub CDN operatora -->
-          <button data-caption="Class 730 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=730+highres"><img src="https://via.placeholder.com/400x240?text=730" alt="Class 730 (mini)"></button>
-          <button data-caption="Class 555 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=555+highres"><img src="https://via.placeholder.com/400x240?text=555" alt="Class 555 (mini)"></button>
-          <button data-caption="Class 777 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=777+highres"><img src="https://via.placeholder.com/400x240?text=777" alt="Class 777 (mini)"></button>
-          <button data-caption="Class 68 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=68+highres"><img src="https://via.placeholder.com/400x240?text=68" alt="Class 68 (mini)"></button>
-          <button data-caption="Class 801 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=801+highres"><img src="https://via.placeholder.com/400x240?text=801" alt="Class 801 (mini)"></button>
-          <button data-caption="HST — Class 43 — przykładowe ujęcie" data-src="https://via.placeholder.com/1200x800?text=HST+highres"><img src="https://via.placeholder.com/400x240?text=HST" alt="HST (mini)"></button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <aside class="sidebar">
-    <div class="panel">
-      <h3>Opcje rozbudowy</h3>
-      <ul style="margin-top:10px;color:var(--muted)">
-        <li>Podmiana placeholderów na zdjęcia z Wikimedia Commons (podam propozycje).</li>
-        <li>Dodanie lightboxu z pełnym opisem każdego zdjęcia.</li>
-        <li>Interaktywna mapa tras (Leaflet) i możliwość filtrowania klas po regionie.</li>
-      </ul>
-    </div>
-
-    <div class="panel" style="margin-top:12px">
-      <h3>Legenda i skróty</h3>
-      <p class="small" style="margin-top:8px">EMU — Electric Multiple Unit; DMU — Diesel Multiple Unit; HST — High Speed Train; LNR/LNER — operatorzy. Jeśli chcesz, dopiszę pełne specyfikacje techniczne (masa, prędkość, moc).</p>
-    </div>
-  </aside>
-</main>
-
-<footer>
-  <p>Gotowe — poprawiona, elegancka wersja z galerią i czytelną typografią. Napisz, jeśli chcesz, bym podmienił placeholdery na konkretnie wybrane zdjęcia (wskaż klasy/ujęcia) — podam linki i wstawię je.</p>
-</footer>
-
-  </div>  <script>
-    // Lazy-load thumbnails (data-src pattern) — proste
-    document.querySelectorAll('[data-src]').forEach(img=>{
-      const el = img;
-      el.setAttribute('loading','lazy');
-      // if element is <img> with data-src attribute
-      if(el.tagName=== 'IMG' && el.dataset.src){ el.src = el.dataset.src; }
-      // gallery buttons use data-src on button; handled in lightbox below
-    });
-
-    // Lightbox: very small, accessible
-    const gallery = document.getElementById('gallery');
-    let lb;
-    function openLightbox(src, caption){
-      if(lb) lb.remove();
-      lb = document.createElement('div');
-      lb.style.position='fixed';lb.style.inset=0;lb.style.background='rgba(0,0,0,.75)';lb.style.display='flex';lb.style.alignItems='center';lb.style.justifyContent='center';lb.style.zIndex=9999;
-      lb.innerHTML = `<div style="max-width:90%;max-height:90%;"><img src="${src}" alt="${caption}" style="max-width:100%;height:auto;display:block;border-radius:8px"><div style="color:#fff;margin-top:8px;text-align:center">${caption} <button id=lbClose style='margin-left:12px;padding:6px 10px;border-radius:6px;border:0;cursor:pointer'>Zamknij</button></div></div>`;
-      lb.addEventListener('click', e=>{ if(e.target===lb) lb.remove(); });
-      document.body.appendChild(lb);
-      document.getElementById('lbClose').addEventListener('click', ()=>lb.remove());
+function createDeck() {
+  deck=[];
+  for(let suit of suits){
+    for(let value of values){
+      deck.push({suit,value});
     }
+  }
+  deck=shuffle(deck);
+}
 
-    gallery.querySelectorAll('button').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        openLightbox(btn.dataset.src, btn.dataset.caption);
-      });
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
+  return array;
+}
+
+function drawCard(){ return deck.pop(); }
+
+function startGame(){
+  createDeck();
+  playerHands=[[drawCard(),drawCard()]];
+  currentHandIndex=0;
+  dealerHand=[drawCard(),drawCard()];
+  playerTurn=true;
+  strategyVisible=false;
+  document.getElementById('strategy').innerText="Pokaż podpowiedź";
+  updateDisplay();
+  document.getElementById('message').innerText="Twój ruch!";
+}
+
+function handValue(hand){
+  let sum=0, aces=0;
+  for(let card of hand){
+    if(['J','Q','K'].includes(card.value)) sum+=10;
+    else if(card.value==='A'){sum+=11; aces++;}
+    else sum+=parseInt(card.value);
+  }
+  while(sum>21 && aces>0){sum-=10; aces--;}
+  return sum;
+}
+
+function createCardDiv(card, hidden=false){
+  const div=document.createElement('div');
+  div.className='card';
+  if(hidden) div.classList.add('hidden');
+  if(card.suit==='♥') div.classList.add('heart');
+  if(card.suit==='♦') div.classList.add('diamond');
+  if(card.suit==='♣') div.classList.add('club');
+  if(card.suit==='♠') div.classList.add('spade');
+  div.innerText=hidden?'?':card.value+card.suit;
+  div.style.transform="translateY(-50px)";
+  setTimeout(()=>{ div.style.transform="translateY(0)"; },50);
+  return div;
+}
+
+function updateDisplay(showDealer=false){
+  const dealerDiv=document.getElementById('dealer-hand');
+  dealerDiv.innerHTML="";
+  dealerHand.forEach((card,i)=>{
+    let hidden=(i===1 && !showDealer);
+    dealerDiv.appendChild(createCardDiv(card,hidden));
+  });
+
+  const visibleDealerCards = dealerHand.slice(0, showDealer? dealerHand.length : 1);
+  document.getElementById('dealer-value').innerText = "Suma odkrytych kart: " + handValue(visibleDealerCards);
+
+  const playerDiv=document.getElementById('player-hand');
+  playerDiv.innerHTML="";
+  playerHands.forEach((hand,i)=>{
+    const handContainer=document.createElement('div');
+    handContainer.style.display="flex";
+    hand.forEach(card=>{
+      handContainer.appendChild(createCardDiv(card));
     });
-  </script></body>
+    const label=document.createElement('div');
+    label.innerHTML=` Ręka ${i+1} (Suma: ${handValue(hand)})`;
+    if(i===currentHandIndex) label.innerHTML+=" ← Twoja ręka";
+    handContainer.appendChild(label);
+    playerDiv.appendChild(handContainer);
+  });
+}
+
+function hit(){ if(!playerTurn) return; playerHands[currentHandIndex].push(drawCard()); updateDisplay(); if(handValue(playerHands[currentHandIndex])>21) nextHandOrDealer(); }
+function stand(){ if(!playerTurn) return; nextHandOrDealer(); }
+function doubleBet(){ if(!playerTurn) return; playerHands[currentHandIndex].push(drawCard()); nextHandOrDealer(); }
+function split(){ const hand=playerHands[currentHandIndex]; if(hand.length===2 && hand[0].value===hand[1].value){ playerHands[currentHandIndex]=[hand[0]]; playerHands.splice(currentHandIndex+1,0,[hand[1]]); playerHands[currentHandIndex].push(drawCard()); playerHands[currentHandIndex+1].push(drawCard()); updateDisplay(); } else alert("Nie możesz splitować tej ręki!"); }
+
+function nextHandOrDealer(){ if(currentHandIndex<playerHands.length-1){ currentHandIndex++; updateDisplay(); } else { playerTurn=false; revealDealerCard(); } }
+function revealDealerCard(){ const dealerDiv=document.getElementById('dealer-hand'); const hiddenCard=dealerDiv.children[1]; hiddenCard.style.transition="transform 0.6s"; hiddenCard.style.transform="rotateY(180deg)"; setTimeout(()=>{ updateDisplay(true); dealerPlay(); },600); }
+function dealerPlay(){ let sum=handValue(dealerHand); function dealerStep(){ sum=handValue(dealerHand); if(sum<17){ dealerHand.push(drawCard()); updateDisplay(true); setTimeout(dealerStep,600); } else endRound(); } setTimeout(dealerStep,600); }
+function endRound(){ const dealerSum=handValue(dealerHand); let msg=""; playerHands.forEach((hand,i)=>{ const sum=handValue(hand); if(sum>21) msg+=`Ręka ${i+1}: Przegrałeś! Bust.<br>`; else if(dealerSum>21) msg+=`Ręka ${i+1}: Wygrałeś! Krupier bust.<br>`; else if(sum>dealerSum) msg+=`Ręka ${i+1}: Wygrałeś!<br>`; else if(sum<dealerSum) msg+=`Ręka ${i+1}: Przegrałeś.<br>`; else msg+=`Ręka ${i+1}: Remis (Push).<br>`; }); updateDisplay(true); document.getElementById('message').innerHTML=msg+" Kliknij aby rozpocząć nową rundę."; history.push(msg.replace(/<br>/g," | ")); document.getElementById('history').innerText="Historia: "+history.join(" || "); document.body.onclick=function(){document.body.onclick=null; startGame();} }
+
+// Funkcja strategii – GLOBALNA
+function getStrategy(){
+  const hand=playerHands[currentHandIndex];
+  const playerSum=handValue(hand);
+  const dealerCard=dealerHand[0].value;
+  if(hand.length===2 && hand[0].value===hand[1].value) return "Możesz Split!";
+  else if(playerSum>=17) return "Stand";
+  else if(playerSum>=13 && ['2','3','4','5','6'].includes(dealerCard)) return "Stand";
+  else if(playerSum===12 && ['4','5','6'].includes(dealerCard)) return "Stand";
+  else if(playerSum===11) return "Double jeśli możliwe, inaczej Hit";
+  else if(playerSum===10 && !['10','J','Q','K','A'].includes(dealerCard)) return "Double jeśli możliwe, inaczej Hit";
+  else if(playerSum===9 && ['3','4','5','6'].includes(dealerCard)) return "Double jeśli możliwe, inaczej Hit";
+  else return "Hit";
+}
+
+// Obsługa przycisku podpowiedzi
+document.getElementById('strategy').onclick=function(){
+  strategyVisible=!strategyVisible;
+  document.getElementById('strategy').innerText = strategyVisible 
+      ? "Podpowiedź: " + getStrategy() 
+      : "Pokaż podpowiedź";
+}
+
+// Start gry
+startGame();
+</script>
+
+</body>
 </html>
