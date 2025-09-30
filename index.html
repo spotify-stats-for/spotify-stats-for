@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blackjack Symulator v.1.3</title>
+<title>Blackjack Symulator v.1.5.</title>
 <style>
 body { font-family: Arial, sans-serif; background: #2b2b2b; color: #fff; text-align: center; margin:0; padding:0;}
 h1 { margin: 10px 0; }
@@ -19,11 +19,32 @@ h1 { margin: 10px 0; }
 #strategy { margin-top: 10px; font-size: 16px; color: #ffd700; cursor: pointer; }
 #dealer-value { margin-top:5px; font-size:16px; color:#ffeb3b; }
 #history { margin-top: 15px; font-size: 14px; max-width: 800px; margin-left:auto;margin-right:auto;}
+
+/* Overlay dla zakończenia rundy */
+#overlay {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 32px;
+  font-weight: bold;
+  z-index: 100;
+  display: none;
+  text-align: center;
+}
+#overlay small { font-size: 18px; display:block; margin-top:10px; }
+#overlay button { margin-top: 20px; padding: 10px 20px; font-size: 18px; background: yellow; border:none; border-radius: 5px; cursor:pointer; font-weight:bold; }
 </style>
 </head>
 <body>
 
-<h1>Blackjack Symulator v.1.3 by Filip</h1>
+<h1>Blackjack Symulator v.1.5. by Filip</h1>
 
 <div id="table">
   <div><strong>Krupier:</strong></div>
@@ -44,6 +65,13 @@ h1 { margin: 10px 0; }
 <div id="strategy">Pokaż podpowiedź</div>
 <div id="message"></div>
 <div id="history">Historia: </div>
+
+<!-- Overlay końcowy -->
+<div id="overlay">
+  <div id="overlay-msg"></div>
+  <small id="overlay-score"></small>
+  <button onclick="startGame()">Kliknij aby zagrać ponownie</button>
+</div>
 
 <script>
 const suits = ['♠','♥','♦','♣'];
@@ -82,6 +110,7 @@ function startGame(){
   document.getElementById('strategy').innerText="Pokaż podpowiedź";
   updateDisplay();
   document.getElementById('message').innerText="Twój ruch!";
+  document.getElementById('overlay').style.display="none";
 }
 
 function handValue(hand){
@@ -144,7 +173,32 @@ function split(){ const hand=playerHands[currentHandIndex]; if(hand.length===2 &
 function nextHandOrDealer(){ if(currentHandIndex<playerHands.length-1){ currentHandIndex++; updateDisplay(); } else { playerTurn=false; revealDealerCard(); } }
 function revealDealerCard(){ const dealerDiv=document.getElementById('dealer-hand'); const hiddenCard=dealerDiv.children[1]; hiddenCard.style.transition="transform 0.6s"; hiddenCard.style.transform="rotateY(180deg)"; setTimeout(()=>{ updateDisplay(true); dealerPlay(); },600); }
 function dealerPlay(){ let sum=handValue(dealerHand); function dealerStep(){ sum=handValue(dealerHand); if(sum<17){ dealerHand.push(drawCard()); updateDisplay(true); setTimeout(dealerStep,600); } else endRound(); } setTimeout(dealerStep,600); }
-function endRound(){ const dealerSum=handValue(dealerHand); let msg=""; playerHands.forEach((hand,i)=>{ const sum=handValue(hand); if(sum>21) msg+=`Ręka ${i+1}: Przegrałeś! Bust.<br>`; else if(dealerSum>21) msg+=`Ręka ${i+1}: Wygrałeś! Krupier bust.<br>`; else if(sum>dealerSum) msg+=`Ręka ${i+1}: Wygrałeś!<br>`; else if(sum<dealerSum) msg+=`Ręka ${i+1}: Przegrałeś.<br>`; else msg+=`Ręka ${i+1}: Remis (Push).<br>`; }); updateDisplay(true); document.getElementById('message').innerHTML=msg+" Kliknij aby rozpocząć nową rundę."; history.push(msg.replace(/<br>/g," | ")); document.getElementById('history').innerText="Historia: "+history.join(" || "); document.body.onclick=function(){document.body.onclick=null; startGame();} }
+
+function endRound(){
+    const dealerSum = handValue(dealerHand);
+    const playerSum = handValue(playerHands[currentHandIndex]);
+    let msg="", color="", scoreText="";
+
+    if(playerSum>21) { msg="Przegrałeś!"; color="red"; }
+    else if(dealerSum>21) { msg="Wygrałeś!"; color="green"; }
+    else if(playerSum>dealerSum) { msg="Wygrałeś!"; color="green"; }
+    else if(playerSum<dealerSum) { msg="Przegrałeś"; color="red"; }
+    else { msg="Remis"; color="blue"; }
+
+    scoreText = `Ty: ${playerSum} vs Krupier: ${dealerSum}`;
+
+    document.getElementById('overlay-msg').innerText = msg;
+    document.getElementById('overlay-msg').style.color = color;
+    document.getElementById('overlay-score').innerText = scoreText;
+    document.getElementById('overlay').style.display="flex";
+
+    updateDisplay(true);
+
+    history.push(`${msg} | ${scoreText}`);
+    document.getElementById('history').innerText = "Historia: "+history.join(" || ");
+
+    playerTurn=false;
+}
 
 // Funkcja strategii – GLOBALNA
 function getStrategy(){
