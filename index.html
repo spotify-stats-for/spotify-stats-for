@@ -1,231 +1,772 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blackjack Symulator v.1.5.</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Blackjack Symulator v.3.5 — Audio & Menu</title>
 <style>
-body { font-family: Arial, sans-serif; background: #2b2b2b; color: #fff; text-align: center; margin:0; padding:0;}
-h1 { margin: 10px 0; }
-#table { margin: 20px auto; width: 90%; max-width: 800px; min-height: 250px; background: #0b3d0b; border-radius: 15px; padding: 15px; position: relative; }
-.hand-container { margin: 10px 0; display: flex; justify-content: center; flex-wrap: wrap; min-height: 60px; }
-.card { width: 60px; height: 90px; border-radius: 8px; margin: 5px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #000; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: transform 0.5s, opacity 0.5s; transform-style: preserve-3d; position: relative; }
-.card.hidden { background: #444; color: #444; cursor: pointer; }
-.card.heart, .card.diamond { color: red; }
-.card.club, .card.spade { color: black; }
-.controls button { margin: 5px; padding: 10px 15px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background: #444; color: #fff; transition: 0.2s; }
-.controls button:hover { background: #666; }
-#message { margin-top: 15px; font-weight: bold; font-size: 18px; }
-#strategy { margin-top: 10px; font-size: 16px; color: #ffd700; cursor: pointer; }
-#dealer-value { margin-top:5px; font-size:16px; color:#ffeb3b; }
-#history { margin-top: 15px; font-size: 14px; max-width: 800px; margin-left:auto;margin-right:auto;}
-
-/* Overlay dla zakończenia rundy */
-#overlay {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(5px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-size: 32px;
-  font-weight: bold;
-  z-index: 100;
-  display: none;
-  text-align: center;
-}
-#overlay small { font-size: 18px; display:block; margin-top:10px; }
-#overlay button { margin-top: 20px; padding: 10px 20px; font-size: 18px; background: yellow; border:none; border-radius: 5px; cursor:pointer; font-weight:bold; }
+  :root{
+    --bg:#0f0f0f; --panel:#0b3d0b; --accent:#ffd600; --muted:#bdbdbd;
+    --green:#00e676; --red:#ff5252; --blue:#2196f3;
+    --card-w:64px; --card-h:96px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: linear-gradient(180deg,#0e0e0e 0%, #1b1b1b 100%); color:#fff; display:flex; min-height:100vh; align-items:center; justify-content:center; padding:20px;}
+  .app{width:100%; max-width:1100px;}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  h1{font-size:18px;margin:0}
+  .top-controls{display:flex;gap:10px;align-items:center}
+  .btn{background:#333;border:0;padding:8px 12px;border-radius:8px;color:#fff;cursor:pointer}
+  .btn.primary{background:var(--accent);color:#000;font-weight:700}
+  .panel{background:var(--panel);border-radius:12px;padding:14px;box-shadow:0 6px 30px rgba(0,0,0,0.6)}
+  .layout{display:grid;grid-template-columns:360px 1fr;gap:16px}
+  label{font-size:13px;color:var(--muted)}
+  input[type=number], select{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:#0b2e0b;color:#fff}
+  .center{display:flex;justify-content:center}
+  #table{margin-top:8px; padding:12px}
+  .hand-container{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;min-height:110px}
+  .card{width:var(--card-w);height:var(--card-h);border-radius:8px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.6);transform-origin:center; transition:transform .25s}
+  .card.hidden{background:#444;color:#444}
+  .card.heart,.card.diamond{color:#d32f2f}
+  .card.club,.card.spade{color:#222}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+  .controls .btn:disabled{background:#222;color:#777;cursor:not-allowed}
+  .info{margin-top:10px;font-size:14px;color:var(--muted)}
+  .status{margin-top:8px;font-weight:700}
+  .small{font-size:13px;color:var(--muted)}
+  #overlay, #modal, #menuScreen{position:fixed;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:999}
+  #overlay{background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);display:none;flex-direction:column;padding:20px}
+  #overlay .card-box{background:#0f2a0f;border-radius:12px;padding:22px;text-align:center;max-width:520px}
+  #overlay .msg{font-size:26px;margin-bottom:8px;font-weight:800}
+  #overlay .score{font-size:14px;color:var(--muted);margin-bottom:12px}
+  #overlay .sub{font-size:13px;color:var(--muted);margin-top:8px;text-align:left;white-space:pre-wrap}
+  #modal{pointer-events:none;display:none}
+  #modal .bubble{pointer-events:auto;background:linear-gradient(180deg,#232323,#121212);padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 8px 30px rgba(0,0,0,0.6);color:#fff}
+  .left {display:flex;flex-direction:column;gap:12px}
+  .right {display:flex;flex-direction:column;gap:12px}
+  .balance{font-size:18px;color:var(--green);font-weight:700}
+  .stats{font-size:13px;color:var(--muted)}
+  .mode-tag{font-size:12px;color:var(--muted);padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03)}
+  .hint{margin-top:6px;font-size:14px;color:#ffd54f;min-height:20px}
+  .bet-quick{display:flex;gap:6px;margin-top:6px}
+  .bet-quick button{padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#fff}
+  footer{margin-top:10px;text-align:center;color:var(--muted);font-size:13px}
+  .audio-controls{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .audio-row{display:flex;gap:8px;align-items:center}
+  .audio-row input[type=range]{flex:1}
+  .menu-screen {position:fixed;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));display:flex;align-items:center;justify-content:center;z-index:1000}
+  .menu-box{background:#07120a;padding:28px;border-radius:14px;min-width:320px;color:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.7);text-align:center}
+  .menu-box h2{margin:0 0 12px 0}
+  .menu-box .menu-row{display:flex;gap:8px;justify-content:center;margin-top:10px}
+  @media (max-width:1000px){ .layout{grid-template-columns:1fr;align-items:start} }
 </style>
 </head>
 <body>
+  <div class="app">
+    <header>
+      <h1>Blackjack Symulator v.3.5 — Filip (z dźwiękiem)</h1>
+      <div class="top-controls">
+        <div class="mode-tag" id="modeTag">Tryb: Normalny</div>
+        <button class="btn" id="openMenuBtn">Menu startowe</button>
+      </div>
+    </header>
 
-<h1>Blackjack Symulator v.1.5. by Filip</h1>
+    <div class="layout">
+      <div class="left panel">
+        <div class="panel" id="gamePanel">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="balance" id="balance">Balans: $1000</div>
+            <div class="stats" id="stats">Wygrane: 0 | Przegrane: 0 | Remisy: 0</div>
+          </div>
 
-<div id="table">
-  <div><strong>Krupier:</strong></div>
-  <div class="hand-container" id="dealer-hand"></div>
-  <div id="dealer-value">Suma odkrytych kart: 0</div>
+          <div id="table" style="margin-top:12px">
+            <div><strong>Krupier:</strong></div>
+            <div class="hand-container" id="dealer-hand"></div>
+            <div class="small" id="dealer-value">Suma odkrytych kart: 0</div>
 
-  <div><strong>Ty:</strong></div>
-  <div class="hand-container" id="player-hand"></div>
-</div>
+            <div style="margin-top:10px"><strong>Ty:</strong></div>
+            <div class="hand-container" id="player-hand"></div>
 
-<div class="controls">
-  <button onclick="hit()">Hit</button>
-  <button onclick="stand()">Stand</button>
-  <button onclick="doubleBet()">Double</button>
-  <button onclick="split()">Split</button>
-</div>
+            <div class="hint" id="hintBox"></div>
+            <div class="info status" id="message">Wybierz akcję</div>
 
-<div id="strategy">Pokaż podpowiedź</div>
-<div id="message"></div>
-<div id="history">Historia: </div>
+            <div class="controls" style="margin-top:10px">
+              <button class="btn" id="btn-hit">Hit</button>
+              <button class="btn" id="btn-stand">Stand</button>
+              <button class="btn" id="btn-double">Double</button>
+              <button class="btn" id="btn-split">Split</button>
+              <button class="btn" id="btn-insurance" style="display:none">Insurance</button>
+            </div>
 
-<!-- Overlay końcowy -->
-<div id="overlay">
-  <div id="overlay-msg"></div>
-  <small id="overlay-score"></small>
-  <button onclick="startGame()">Kliknij aby zagrać ponownie</button>
-</div>
+            <div class="actions-row" style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+              <div class="small">Aktualny zakład: <strong id="currentBetDisplay">$50</strong></div>
+              <div class="small">Rozgrywane ręki: <strong id="handsCount">1</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>Historia</strong></div>
+            <div class="small">Ostatnie</div>
+          </div>
+          <div id="history" class="small" style="margin-top:8px;white-space:pre-wrap">—</div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="panel">
+          <div><strong>Ustawienia gry</strong></div>
+          <div class="small" style="margin-top:8px">Tutaj możesz szybko ustawić zakłady i tryb.</div>
+
+          <div style="margin-top:10px">
+            <label>Tryb gry</label>
+            <select id="modeSelect">
+              <option value="normal">Normalny</option>
+              <option value="training">Treningowy (pokazuje optymalną podpowiedź)</option>
+            </select>
+          </div>
+
+          <div style="margin-top:10px">
+            <label>Początkowy balans</label>
+            <select id="startBalance">
+              <option value="500">500$</option>
+              <option value="1000" selected>1000$</option>
+              <option value="2000">2000$</option>
+            </select>
+          </div>
+
+          <div style="margin-top:10px">
+            <label>Zakład początkowy</label>
+            <input type="number" id="betInput" min="1" value="50" />
+            <div class="bet-quick"><button class="btn" id="quick25">25</button><button class="btn" id="quick50">50</button><button class="btn" id="quick100">100</button></div>
+          </div>
+
+          <div style="margin-top:10px" class="center">
+            <button class="btn primary" id="startBtn">Rozpocznij grę</button>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="small">Audio</div>
+            <div class="audio-controls">
+              <div class="audio-row"><label style="width:70px">Muzyka</label><input id="musicVol" type="range" min="0" max="1" step="0.01" value="0.25"></div>
+              <div class="audio-row"><label style="width:70px">Efekty</label><input id="sfxVol" type="range" min="0" max="1" step="0.01" value="0.9"></div>
+              <div style="display:flex;gap:8px;justify-content:space-between;align-items:center">
+                <button class="btn" id="muteAll">Wycisz</button>
+                <div class="small">Autostart audio wymaga kliknięcia START</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="panel" style="margin-top:12px">
+          <div><strong>Porady</strong></div>
+          <div class="small" style="margin-top:8px">Tryb treningowy pokaże podpowiedź zawsze. Użyj splitów i double z rozwagą — są ograniczenia i wymagają dodatkowego balansu.</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="small">Wersja 3.5 — miłej gry! (Filip)</div>
+    </footer>
+  </div>
+
+  <!-- overlay end-round -->
+  <div id="overlay" style="display:none">
+    <div class="card-box">
+      <div class="msg" id="overlayMsg">Wygrałeś!</div>
+      <div class="score" id="overlayScore">Ty: 21 vs Krupier: 17</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+        <button class="btn primary" id="replayBtn">Zagraj ponownie</button>
+        <button class="btn" id="menuBtn">Powrót do menu</button>
+      </div>
+      <div class="sub" id="overlaySub"></div>
+    </div>
+  </div>
+
+  <!-- in-game modal (custom alerts) -->
+  <div id="modal" style="display:none">
+    <div class="bubble" id="modalBubble"></div>
+  </div>
+
+  <!-- fullscreen menu (constructed on demand) -->
+  <div id="menuScreen" style="display:none" class="menu-screen">
+    <div class="menu-box">
+      <h2>Blackjack — Menu główne</h2>
+      <div style="margin-top:8px">Witaj! Rozpocznij grę lub przejdź do ustawień audio.</div>
+      <div class="menu-row" style="margin-top:14px">
+        <button class="btn primary" id="ms_start_main">Start</button>
+        <button class="btn" id="ms_settings_main">Ustawienia</button>
+        <button class="btn" id="ms_info_main">Info</button>
+      </div>
+      <div style="margin-top:12px" class="small">Kliknięcie START uruchomi dźwięk tła (autoryzacja potrzebna w przeglądarkach).</div>
+    </div>
+  </div>
 
 <script>
-const suits = ['♠','♥','♦','♣'];
-const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+/* ========== AUDIO MODULE (WebAudio synth SFX + simple loop) ========== */
+const AudioSys = (() => {
+  let ctx = null;
+  let master = null, musicGain = null, sfxGain = null;
+  let musicInterval = null;
+  let isMuted = false;
 
-let deck = [], playerHands = [], currentHandIndex = 0, dealerHand = [];
-let playerTurn = true, history = [], strategyVisible=false;
-
-function createDeck() {
-  deck=[];
-  for(let suit of suits){
-    for(let value of values){
-      deck.push({suit,value});
+  function ensureCtx() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = 0.9;
+      musicGain = ctx.createGain(); musicGain.gain.value = 0.25;
+      sfxGain = ctx.createGain(); sfxGain.gain.value = 0.9;
+      musicGain.connect(master); sfxGain.connect(master); master.connect(ctx.destination);
     }
   }
-  deck=shuffle(deck);
-}
 
-function shuffle(array){
-  for(let i=array.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [array[i],array[j]]=[array[j],array[i]];
+  function resume() {
+    ensureCtx();
+    if (ctx.state === 'suspended') return ctx.resume();
+    return Promise.resolve();
   }
-  return array;
-}
 
-function drawCard(){ return deck.pop(); }
+  function setMusicVolume(v) { ensureCtx(); musicGain.gain.value = clamp(v,0,1); }
+  function setSfxVolume(v) { ensureCtx(); sfxGain.gain.value = clamp(v,0,1); }
+  function setMuted(v) { isMuted = !!v; if (master) master.gain.value = v ? 0 : 1; }
 
-function startGame(){
-  createDeck();
-  playerHands=[[drawCard(),drawCard()]];
-  currentHandIndex=0;
-  dealerHand=[drawCard(),drawCard()];
-  playerTurn=true;
-  strategyVisible=false;
-  document.getElementById('strategy').innerText="Pokaż podpowiedź";
-  updateDisplay();
-  document.getElementById('message').innerText="Twój ruch!";
-  document.getElementById('overlay').style.display="none";
-}
+  function clamp(a,b,c){ return Math.max(b, Math.min(c, a)); }
 
-function handValue(hand){
-  let sum=0, aces=0;
-  for(let card of hand){
-    if(['J','Q','K'].includes(card.value)) sum+=10;
-    else if(card.value==='A'){sum+=11; aces++;}
-    else sum+=parseInt(card.value);
+  // tiny envelope helper
+  function playOsc(freq, type='sine', duration=0.12, volume=0.8, destination=sfxGain) {
+    ensureCtx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.value = 0;
+    o.connect(g); g.connect(destination);
+    const now = ctx.currentTime;
+    g.gain.linearRampToValueAtTime(volume, now + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, now + duration);
+    o.start(now); o.stop(now + duration + 0.02);
+    return o;
   }
-  while(sum>21 && aces>0){sum-=10; aces--;}
-  return sum;
+
+  // noise burst for card shuffle/movement
+  function playNoise(duration=0.12, volume=0.7) {
+    ensureCtx();
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i=0;i<bufferSize;i++) data[i] = (Math.random()*2 -1) * (1 - (i/bufferSize));
+    const src = ctx.createBufferSource(); src.buffer = buffer;
+    const g = ctx.createGain(); g.gain.value = volume;
+    src.connect(g); g.connect(sfxGain);
+    src.start();
+    return src;
+  }
+
+  // SFX public functions
+  function sfxClick() { playOsc(880, 'sine', 0.06, 0.12); }
+  function sfxCard() { playNoise(0.14, 0.6); playOsc(900, 'triangle', 0.12, 0.08); }
+  function sfxWin() {
+    // quick arpeggio
+    ensureCtx();
+    const now = ctx.currentTime;
+    [880, 1100, 1320].forEach((f,i) => {
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.value = 0;
+      o.connect(g); g.connect(sfxGain);
+      g.gain.linearRampToValueAtTime(0.18, now + 0.02 + i*0.08);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.36 + i*0.08);
+      o.start(now + i*0.08); o.stop(now + 0.36 + i*0.08);
+    });
+  }
+  function sfxLose() {
+    ensureCtx();
+    const now = ctx.currentTime;
+    [440, 330, 220].forEach((f,i) => {
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = 'sawtooth'; o.frequency.value = f;
+      g.gain.value = 0;
+      o.connect(g); g.connect(sfxGain);
+      g.gain.linearRampToValueAtTime(0.14, now + 0.02 + i*0.09);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.36 + i*0.09);
+      o.start(now + i*0.09); o.stop(now + 0.36 + i*0.09);
+    });
+  }
+
+  // simple background "music" loop (soft arpeggio)
+  function startMusic() {
+    ensureCtx();
+    stopMusic();
+    const pattern = [ 440, 554.37, 659.25, 880 ];
+    let i = 0;
+    musicInterval = setInterval(() => {
+      if (!ctx) return;
+      const f = pattern[i % pattern.length] * (Math.random() > 0.92 ? 2 : 1);
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.value = 0;
+      o.connect(g); g.connect(musicGain);
+      const now = ctx.currentTime;
+      g.gain.linearRampToValueAtTime(0.06, now + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+      o.start(now); o.stop(now + 1.05);
+      i++;
+    }, 360);
+  }
+  function stopMusic() { if (musicInterval) { clearInterval(musicInterval); musicInterval = null; } }
+
+  return {
+    resume, setMusicVolume, setSfxVolume, setMuted,
+    sfxClick, sfxCard, sfxWin, sfxLose,
+    startMusic, stopMusic
+  };
+})();
+
+/* ========== GAME LOGIC (merged & enhanced with audio + main menu) ========== */
+/* Cards & shoe */
+const suits=['♠','♥','♦','♣'];
+const values=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let shoe = [], decksCount=6;
+let playerHands = [], currentHandIndex=0, dealerHand=[];
+let playerTurn=true, historyArr=[], mode='normal';
+let balance=1000, baseBet=50, currentBets = [], insuranceTaken=false, insuranceAmount=0;
+let wins=0, losses=0, draws=0, splitCount=0;
+
+/* UI refs */
+const dealerHandDiv = document.getElementById('dealer-hand');
+const playerHandDiv = document.getElementById('player-hand');
+const dealerValue = document.getElementById('dealer-value');
+const messageBox = document.getElementById('message');
+const hintBox = document.getElementById('hintBox');
+const balanceEl = document.getElementById('balance');
+const statsEl = document.getElementById('stats');
+const historyEl = document.getElementById('history');
+const overlay = document.getElementById('overlay');
+const overlayMsg = document.getElementById('overlayMsg');
+const overlayScore = document.getElementById('overlayScore');
+const overlaySub = document.getElementById('overlaySub');
+const replayBtn = document.getElementById('replayBtn');
+const menuBtn = document.getElementById('menuBtn');
+const modal = document.getElementById('modal');
+const modalBubble = document.getElementById('modalBubble');
+const modeTag = document.getElementById('modeTag');
+const handsCountEl = document.getElementById('handsCount');
+const currentBetDisplay = document.getElementById('currentBetDisplay');
+const btnHit = document.getElementById('btn-hit');
+const btnStand = document.getElementById('btn-stand');
+const btnDouble = document.getElementById('btn-double');
+const btnSplit = document.getElementById('btn-split');
+const btnInsurance = document.getElementById('btn-insurance');
+const openMenuBtn = document.getElementById('openMenuBtn');
+const startBtn = document.getElementById('startBtn');
+const startBalanceSel = document.getElementById('startBalance');
+const betInput = document.getElementById('betInput');
+const modeSelect = document.getElementById('modeSelect');
+const quick25 = document.getElementById('quick25');
+const quick50 = document.getElementById('quick50');
+const quick100 = document.getElementById('quick100');
+const musicVol = document.getElementById('musicVol');
+const sfxVol = document.getElementById('sfxVol');
+const muteAllBtn = document.getElementById('muteAll');
+
+const menuScreen = document.getElementById('menuScreen');
+
+/* helpers */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
+function createShoe(decks=6){ let d=[]; for(let k=0;k<decks;k++) for(let s of suits) for(let v of values) d.push({suit:s,value:v}); shoe = shuffle(d); }
+function drawCardFromShoe(){ if(shoe.length<20) createShoe(decksCount); const c = shoe.pop(); AudioSys.sfxCard(); return c; }
+function cardText(c){ return c.value + c.suit; }
+function handValue(hand){ let sum=0, aces=0; for(let c of hand){ if(['J','Q','K'].includes(c.value)) sum+=10; else if(c.value==='A'){ sum+=11; aces++ } else sum += parseInt(c.value); } while(sum>21 && aces>0){ sum-=10; aces-- } return sum; }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function showModal(text, timeout=1600){ modalBubble.innerText = text; modal.style.display='flex'; AudioSys.sfxClick(); setTimeout(()=>{ modal.style.display='none'; }, timeout); }
+
+/* overlay */
+function showOverlay(msg, score, sub, color){
+  overlayMsg.innerText = msg;
+  overlayMsg.style.color = color || 'var(--green)';
+  overlayScore.innerText = score;
+  overlaySub.innerText = sub || '';
+  overlay.style.display = 'flex';
+}
+function hideOverlay(){ overlay.style.display='none' }
+
+/* UI updates */
+function updateStatsUI(){
+  balanceEl.innerText = `Balans: $${Math.round(balance)}`;
+  statsEl.innerText = `Wygrane: ${wins} | Przegrane: ${losses} | Remisy: ${draws}`;
+  historyEl.innerText = historyArr.length? historyArr.slice(-6).reverse().map(x=>'• '+x).join('\n') : '—';
+  handsCountEl.innerText = playerHands.length;
+  currentBetDisplay.innerText = `$${currentBets[currentHandIndex] || baseBet}`;
+  modeTag.innerText = mode === 'training' ? 'Tryb: Treningowy' : 'Tryb: Normalny';
 }
 
+/* rendering */
 function createCardDiv(card, hidden=false){
   const div=document.createElement('div');
-  div.className='card';
-  if(hidden) div.classList.add('hidden');
-  if(card.suit==='♥') div.classList.add('heart');
-  if(card.suit==='♦') div.classList.add('diamond');
-  if(card.suit==='♣') div.classList.add('club');
-  if(card.suit==='♠') div.classList.add('spade');
-  div.innerText=hidden?'?':card.value+card.suit;
-  div.style.transform="translateY(-50px)";
-  setTimeout(()=>{ div.style.transform="translateY(0)"; },50);
+  div.className='card' + (hidden? ' hidden':'');
+  if(!hidden) div.innerText = cardText(card);
+  else div.innerText = '?';
+  if(!hidden){
+    if(card.suit==='♥' || card.suit==='♦') div.classList.add('heart');
+    if(card.suit==='♣') div.classList.add('club');
+    if(card.suit==='♠') div.classList.add('spade');
+  }
   return div;
 }
-
+function updateControls(){
+  const hand = playerHands[currentHandIndex] || [];
+  const canPlay = playerTurn;
+  btnHit.disabled = !canPlay;
+  btnStand.disabled = !canPlay;
+  btnDouble.disabled = !canPlay || !canDouble(hand);
+  btnSplit.disabled = !canPlay || !canSplit(hand);
+  btnInsurance.style.display = (canOfferInsurance() && canPlay) ? 'inline-block' : 'none';
+}
+function updateHints(){
+  if(mode === 'training' && playerHands[currentHandIndex]){
+    hintBox.innerText = 'Podpowiedź: ' + getStrategy();
+  } else hintBox.innerText = '';
+}
 function updateDisplay(showDealer=false){
-  const dealerDiv=document.getElementById('dealer-hand');
-  dealerDiv.innerHTML="";
-  dealerHand.forEach((card,i)=>{
-    let hidden=(i===1 && !showDealer);
-    dealerDiv.appendChild(createCardDiv(card,hidden));
+  dealerHandDiv.innerHTML='';
+  dealerHand.forEach((c,i)=>{
+    const hidden = (i===1 && !showDealer);
+    dealerHandDiv.appendChild(createCardDiv(c, hidden));
   });
+  const visibleDealer = dealerHand.slice(0, showDealer? dealerHand.length : 1);
+  dealerValue.innerText = 'Suma odkrytych kart: ' + handValue(visibleDealer);
 
-  const visibleDealerCards = dealerHand.slice(0, showDealer? dealerHand.length : 1);
-  document.getElementById('dealer-value').innerText = "Suma odkrytych kart: " + handValue(visibleDealerCards);
-
-  const playerDiv=document.getElementById('player-hand');
-  playerDiv.innerHTML="";
+  playerHandDiv.innerHTML='';
   playerHands.forEach((hand,i)=>{
-    const handContainer=document.createElement('div');
-    handContainer.style.display="flex";
-    hand.forEach(card=>{
-      handContainer.appendChild(createCardDiv(card));
-    });
-    const label=document.createElement('div');
-    label.innerHTML=` Ręka ${i+1} (Suma: ${handValue(hand)})`;
-    if(i===currentHandIndex) label.innerHTML+=" ← Twoja ręka";
-    handContainer.appendChild(label);
-    playerDiv.appendChild(handContainer);
+    const container = document.createElement('div');
+    container.style.display='flex';
+    container.style.alignItems='center';
+    container.style.gap='8px';
+    hand.forEach(card => container.appendChild(createCardDiv(card)));
+    const label = document.createElement('div');
+    label.innerHTML = `Ręka ${i+1} (Suma: ${handValue(hand)})` + (i===currentHandIndex? ' ← Twoja ręka' : '');
+    label.className='small';
+    container.appendChild(label);
+    playerHandDiv.appendChild(container);
   });
+
+  updateStatsUI();
+  updateHints();
+  updateControls();
 }
 
-function hit(){ if(!playerTurn) return; playerHands[currentHandIndex].push(drawCard()); updateDisplay(); if(handValue(playerHands[currentHandIndex])>21) nextHandOrDealer(); }
-function stand(){ if(!playerTurn) return; nextHandOrDealer(); }
-function doubleBet(){ if(!playerTurn) return; playerHands[currentHandIndex].push(drawCard()); nextHandOrDealer(); }
-function split(){ const hand=playerHands[currentHandIndex]; if(hand.length===2 && hand[0].value===hand[1].value){ playerHands[currentHandIndex]=[hand[0]]; playerHands.splice(currentHandIndex+1,0,[hand[1]]); playerHands[currentHandIndex].push(drawCard()); playerHands[currentHandIndex+1].push(drawCard()); updateDisplay(); } else alert("Nie możesz splitować tej ręki!"); }
+/* rules checks */
+function canDouble(hand){
+  const sum = handValue(hand);
+  return hand.length===2 && sum>=9 && sum<=11 && balance >= (currentBets[currentHandIndex] || baseBet);
+}
+function canSplit(hand){
+  return hand.length===2 && hand[0].value === hand[1].value && splitCount < 3 && balance >= (currentBets[currentHandIndex] || baseBet);
+}
+function canOfferInsurance(){ return dealerHand[0] && dealerHand[0].value==='A' && !insuranceTaken && playerTurn; }
 
-function nextHandOrDealer(){ if(currentHandIndex<playerHands.length-1){ currentHandIndex++; updateDisplay(); } else { playerTurn=false; revealDealerCard(); } }
-function revealDealerCard(){ const dealerDiv=document.getElementById('dealer-hand'); const hiddenCard=dealerDiv.children[1]; hiddenCard.style.transition="transform 0.6s"; hiddenCard.style.transform="rotateY(180deg)"; setTimeout(()=>{ updateDisplay(true); dealerPlay(); },600); }
-function dealerPlay(){ let sum=handValue(dealerHand); function dealerStep(){ sum=handValue(dealerHand); if(sum<17){ dealerHand.push(drawCard()); updateDisplay(true); setTimeout(dealerStep,600); } else endRound(); } setTimeout(dealerStep,600); }
+/* start a round */
+function startRound(opts = {}) {
+  if(opts.mode) mode = opts.mode;
+  if(opts.startingBalance !== undefined) balance = Number(opts.startingBalance);
+  if(opts.startingBet !== undefined) baseBet = Number(opts.startingBet);
 
-function endRound(){
-    const dealerSum = handValue(dealerHand);
-    const playerSum = handValue(playerHands[currentHandIndex]);
-    let msg="", color="", scoreText="";
+  createShoe(decksCount);
+  playerHands = [];
+  currentHandIndex = 0;
+  dealerHand = [];
+  insuranceTaken = false;
+  insuranceAmount = 0;
+  splitCount = 0;
 
-    if(playerSum>21) { msg="Przegrałeś!"; color="red"; }
-    else if(dealerSum>21) { msg="Wygrałeś!"; color="green"; }
-    else if(playerSum>dealerSum) { msg="Wygrałeś!"; color="green"; }
-    else if(playerSum<dealerSum) { msg="Przegrałeś"; color="red"; }
-    else { msg="Remis"; color="blue"; }
+  // deal
+  playerHands.push([ drawCardFromShoe(), drawCardFromShoe() ]);
+  dealerHand.push( drawCardFromShoe(), drawCardFromShoe() );
+  currentBets = [baseBet];
 
-    scoreText = `Ty: ${playerSum} vs Krupier: ${dealerSum}`;
+  if(balance < baseBet){ showModal('Niewystarczający balans na zakład'); return; }
+  balance -= baseBet;
 
-    document.getElementById('overlay-msg').innerText = msg;
-    document.getElementById('overlay-msg').style.color = color;
-    document.getElementById('overlay-score').innerText = scoreText;
-    document.getElementById('overlay').style.display="flex";
+  playerTurn = true;
+  messageBox.innerText = 'Twoja tura. Hit/Stand/Double/Split';
+  updateDisplay(false);
 
+  btnInsurance.style.display = canOfferInsurance() ? 'inline-block' : 'none';
+
+  // natural blackjack check
+  if(handValue(playerHands[0]) === 21){
+    setTimeout(()=>{ revealDealer(false, true); }, 700);
+  }
+}
+
+/* reveal dealer and play */
+async function revealDealer(auto=false, naturalCheck=false){
+  updateDisplay(true);
+  if(naturalCheck){
+    if(handValue(dealerHand) === 21){
+      resolveAllHands({dealerBlackjack:true});
+    } else {
+      resolveAllHands({playerBlackjack:true});
+    }
+    return;
+  }
+
+  await sleep(600);
+  while(handValue(dealerHand) < 17){
+    dealerHand.push(drawCardFromShoe());
     updateDisplay(true);
-
-    history.push(`${msg} | ${scoreText}`);
-    document.getElementById('history').innerText = "Historia: "+history.join(" || ");
-
-    playerTurn=false;
+    await sleep(600);
+  }
+  resolveAllHands();
 }
 
-// Funkcja strategii – GLOBALNA
+/* resolve hands */
+function resolveAllHands(flags = {}){
+  const dealerSum = handValue(dealerHand);
+  let summary = [];
+  let roundWins=0, roundLosses=0, roundDraws=0;
+
+  if(insuranceTaken){
+    if(handValue(dealerHand) === 21){
+      const pay = insuranceAmount * 2;
+      balance += pay;
+      summary.push(`Insurance wypłaciło $${pay}`);
+    } else {
+      summary.push(`Ubezpieczenie stracone: $${insuranceAmount}`);
+    }
+  }
+
+  playerHands.forEach((hand, idx)=>{
+    const bet = currentBets[idx] || baseBet;
+    const pSum = handValue(hand);
+    let msg='';
+
+    if(flags.dealerBlackjack && pSum===21 && hand.length===2){
+      msg = `Ręka ${idx+1}: Remis (Blackjack krupiera) — (${pSum} vs ${dealerSum})`;
+      roundDraws++; balance += bet;
+    }
+    else if(flags.playerBlackjack && pSum===21 && hand.length===2){
+      msg = `Ręka ${idx+1}: Blackjack! Wygrana 3:2 — (${pSum} vs ${dealerSum})`;
+      roundWins++; const profit = Math.round(bet * 1.5); balance += bet + profit;
+    }
+    else if(pSum > 21){
+      msg = `Ręka ${idx+1}: Bust — Przegrałeś — (${pSum} vs ${dealerSum})`; roundLosses++;
+    }
+    else if(dealerSum > 21){
+      msg = `Ręka ${idx+1}: Krupier bust — Wygrałeś — (${pSum} vs ${dealerSum})`; roundWins++; balance += bet * 2;
+    }
+    else if(pSum > dealerSum){
+      msg = `Ręka ${idx+1}: Wygrałeś — (${pSum} vs ${dealerSum})`; roundWins++; balance += bet * 2;
+    }
+    else if(pSum < dealerSum){
+      msg = `Ręka ${idx+1}: Przegrałeś — (${pSum} vs ${dealerSum})`; roundLosses++;
+    }
+    else {
+      msg = `Ręka ${idx+1}: Remis — (${pSum} vs ${dealerSum})`; roundDraws++; balance += bet;
+    }
+
+    summary.push(msg);
+  });
+
+  let primary = '';
+  let color = '';
+  if(roundWins > roundLosses){ primary = 'Wygrałeś!'; color = getComputedStyle(document.documentElement).getPropertyValue('--green') || '#00e676'; AudioSys.sfxWin(); }
+  else if(roundLosses > roundWins){ primary = 'Przegrałeś'; color = getComputedStyle(document.documentElement).getPropertyValue('--red') || '#ff5252'; AudioSys.sfxLose(); }
+  else { primary = 'Remis'; color = getComputedStyle(document.documentElement).getPropertyValue('--blue') || '#2196f3'; AudioSys.sfxClick(); }
+
+  const playerScore = playerHands[0] ? handValue(playerHands[0]) : '-';
+  showOverlay(primary, `Ty: ${playerScore} vs Krupier: ${dealerSum}`, summary.join('\n'), color.trim());
+
+  historyArr.push(summary.join(' || '));
+  updateStatsUI();
+
+  wins += roundWins;
+  losses += roundLosses;
+  draws += roundDraws;
+
+  playerTurn = false;
+  updateDisplay(true);
+}
+
+/* player actions */
+function playerHit(){
+  if(!playerTurn) return;
+  const hand = playerHands[currentHandIndex];
+  hand.push(drawCardFromShoe());
+  updateDisplay(false);
+  if(handValue(hand) > 21){
+    messageBox.innerText = 'Bust — przechodzę do następnej ręki/krupiera';
+    setTimeout(nextHandOrDealer, 700);
+  } else {
+    messageBox.innerText = 'Dobrałeś kartę';
+    AudioSys.sfxClick();
+  }
+}
+function playerStand(){
+  if(!playerTurn) return;
+  messageBox.innerText = 'Stand';
+  AudioSys.sfxClick();
+  setTimeout(nextHandOrDealer, 250);
+}
+function playerDouble(){
+  if(!playerTurn) return;
+  const hand = playerHands[currentHandIndex];
+  if(!canDouble(hand)){ showModal('Double dostępne tylko przy 2 kartach i sumie 9-11 oraz gdy masz wystarczający balans.'); return; }
+  const extra = currentBets[currentHandIndex] || baseBet;
+  if(balance < extra){ showModal('Za mało środków aby podwoić zakład'); return; }
+  balance -= extra;
+  currentBets[currentHandIndex] = (currentBets[currentHandIndex] || baseBet) + extra;
+  hand.push(drawCardFromShoe());
+  updateDisplay(false);
+  messageBox.innerText = 'Double — dobrano jedną kartę';
+  AudioSys.sfxClick();
+  setTimeout(nextHandOrDealer, 600);
+}
+function playerSplit(){
+  if(!playerTurn) return;
+  const hand = playerHands[currentHandIndex];
+  if(!canSplit(hand)){ showModal('Nie można splitować (wymagane pary, limit splitów: 3, oraz wystarczający balans).'); return; }
+  const currentBet = currentBets[currentHandIndex] || baseBet;
+  if(balance < currentBet){ showModal('Za mało środków aby splitować (wymagany dodatkowy zakład).'); return; }
+  balance -= currentBet;
+  const cardA = hand[0], cardB = hand[1];
+  playerHands[currentHandIndex] = [cardA, drawCardFromShoe()];
+  playerHands.splice(currentHandIndex+1, 0, [cardB, drawCardFromShoe()]);
+  currentBets.splice(currentHandIndex+1, 0, currentBet);
+  splitCount++;
+  updateDisplay(false);
+  showModal('Split wykonany');
+  AudioSys.sfxClick();
+}
+function playerInsurance(){
+  if(!playerTurn || !canOfferInsurance()) return;
+  const ins = Math.floor((currentBets[currentHandIndex] || baseBet)/2);
+  if(ins <= 0 || balance < ins) { showModal('Nie możesz wziąć ubezpieczenia.'); return; }
+  balance -= ins;
+  insuranceTaken = true;
+  insuranceAmount = ins;
+  btnInsurance.style.display = 'none';
+  updateStatsUI();
+  showModal(`Ubezpieczenie zakupione: $${ins}`);
+  AudioSys.sfxClick();
+}
+function nextHandOrDealer(){
+  if(currentHandIndex < playerHands.length - 1){
+    currentHandIndex++;
+    messageBox.innerText = 'Twoja kolej na następną rękę';
+    updateDisplay(false);
+  } else {
+    playerTurn = false;
+    updateDisplay(true);
+    setTimeout(()=> revealDealer(false, false), 400);
+  }
+}
+
+/* strategy helper */
 function getStrategy(){
-  const hand=playerHands[currentHandIndex];
-  const playerSum=handValue(hand);
-  const dealerCard=dealerHand[0].value;
-  if(hand.length===2 && hand[0].value===hand[1].value) return "Możesz Split!";
-  else if(playerSum>=17) return "Stand";
-  else if(playerSum>=13 && ['2','3','4','5','6'].includes(dealerCard)) return "Stand";
-  else if(playerSum===12 && ['4','5','6'].includes(dealerCard)) return "Stand";
-  else if(playerSum===11) return "Double jeśli możliwe, inaczej Hit";
-  else if(playerSum===10 && !['10','J','Q','K','A'].includes(dealerCard)) return "Double jeśli możliwe, inaczej Hit";
-  else if(playerSum===9 && ['3','4','5','6'].includes(dealerCard)) return "Double jeśli możliwe, inaczej Hit";
-  else return "Hit";
+  const hand = playerHands[currentHandIndex] || [];
+  const pSum = handValue(hand);
+  const dealerUp = dealerHand[0] ? dealerHand[0].value : null;
+  if(hand.length===2 && hand[0].value === hand[1].value) return 'Możesz splitować';
+  if(pSum >= 17) return 'Stand';
+  if(pSum >= 13 && ['2','3','4','5','6'].includes(dealerUp)) return 'Stand';
+  if(pSum === 12 && ['4','5','6'].includes(dealerUp)) return 'Stand';
+  if(pSum === 11) return 'Double jeśli możliwe';
+  if(pSum === 10 && !['10','J','Q','K','A'].includes(dealerUp)) return 'Double jeśli możliwe';
+  if(pSum === 9 && ['3','4','5','6'].includes(dealerUp)) return 'Double jeśli możliwe';
+  return 'Hit';
 }
 
-// Obsługa przycisku podpowiedzi
-document.getElementById('strategy').onclick=function(){
-  strategyVisible=!strategyVisible;
-  document.getElementById('strategy').innerText = strategyVisible 
-      ? "Podpowiedź: " + getStrategy() 
-      : "Pokaż podpowiedź";
+/* event bindings */
+btnHit.addEventListener('click', ()=>{ AudioSys.sfxClick(); playerHit(); });
+btnStand.addEventListener('click', ()=>{ AudioSys.sfxClick(); playerStand(); });
+btnDouble.addEventListener('click', ()=>{ AudioSys.sfxClick(); playerDouble(); });
+btnSplit.addEventListener('click', ()=>{ AudioSys.sfxClick(); playerSplit(); });
+btnInsurance.addEventListener('click', ()=>{ AudioSys.sfxClick(); playerInsurance(); });
+
+replayBtn.addEventListener('click', ()=>{
+  hideOverlay();
+  startRound({startingBet: baseBet, startingBalance: balance, mode});
+});
+
+menuBtn.addEventListener('click', ()=>{
+  hideOverlay();
+  showMainMenu();
+});
+
+/* menu & start controls */
+openMenuBtn.addEventListener('click', showMainMenu);
+startBtn.addEventListener('click', ()=>{
+  AudioSys.resume().then(()=>{ AudioSys.startMusic(); });
+  const sb = Number(startBalanceSel.value);
+  const bet = Number(betInput.value);
+  const md = modeSelect.value;
+  if(!bet || bet < 1){ showModal('Ustal poprawny zakład (>=1)'); return; }
+  if(sb < bet){ showModal('Balans musi być większy lub równy zakładowi.'); return; }
+  mode = md;
+  balance = Number(sb);
+  baseBet = Number(bet);
+  wins=losses=draws=0;
+  updateStatsUI();
+  AudioSys.sfxClick();
+  startRound({startingBet: baseBet, startingBalance: balance, mode});
+});
+
+quick25.addEventListener('click', ()=> betInput.value = 25);
+quick50.addEventListener('click', ()=> betInput.value = 50);
+quick100.addEventListener('click', ()=> betInput.value = 100);
+
+/* music/sfx controls */
+musicVol.addEventListener('input', (e)=> { AudioSys.setMusicVolume(Number(e.target.value)); });
+sfxVol.addEventListener('input', (e)=> { AudioSys.setSfxVolume(Number(e.target.value)); });
+muteAllBtn.addEventListener('click', ()=>{
+  const muted = muteAllBtn.dataset.muted === '1';
+  AudioSys.setMuted(!muted);
+  muteAllBtn.dataset.muted = muted ? '0' : '1';
+  muteAllBtn.innerText = muted ? 'Wycisz' : 'Włącz dźwięk';
+});
+
+/* menu screen controls */
+document.getElementById('ms_start_main').addEventListener('click', ()=>{
+  document.getElementById('menuScreen').style.display='none';
+  // trigger start action similar to startBtn: just open small start dialog or start default
+  AudioSys.resume().then(()=>{ AudioSys.startMusic(); });
+  startBtn.click();
+});
+document.getElementById('ms_settings_main').addEventListener('click', ()=>{
+  document.getElementById('menuScreen').style.display='none';
+  showModal('Otwórz ustawienia po prawej stronie', 1500);
+});
+document.getElementById('ms_info_main').addEventListener('click', ()=>{
+  document.getElementById('menuScreen').style.display='none';
+  showModal('Blackjack Symulator v3.5 — dźwięk i menu dodane', 1800);
+});
+
+function showMainMenu(){
+  document.getElementById('menuScreen').style.display='flex';
+  AudioSys.sfxClick();
 }
 
-// Start gry
-startGame();
+/* keyboard shortcuts */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'h') { AudioSys.sfxClick(); playerHit(); }
+  if(e.key === 's') { AudioSys.sfxClick(); playerStand(); }
+  if(e.key === 'd') { AudioSys.sfxClick(); playerDouble(); }
+  if(e.key === 'p') { AudioSys.sfxClick(); playerSplit(); }
+});
+
+/* init UI & show menu on load */
+updateStatsUI();
+updateDisplay(false);
+updateControls();
+showMainMenu();
+
+/* ensure audio resume on first gesture for some browsers */
+window.addEventListener('click', function oneTapForAudio(){
+  AudioSys.resume().then(()=>{}).catch(()=>{});
+  window.removeEventListener('click', oneTapForAudio);
+});
 </script>
-
 </body>
 </html>
