@@ -2,54 +2,52 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dla mojej Walentynki ❤️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ważne pytanie! ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    
-    <script type="text/javascript">
-        (function() {
-            // Twój Public Key
-            emailjs.init("h_roYFzswqAep8r6b"); 
-        })();
-    </script>
 
     <style>
+        /* Stylizacja ogólna */
         body {
             font-family: 'Pacifico', cursive;
-            background-color: #ffe6e6;
+            background-color: #ffe6e6; /* Jasny róż */
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            overflow: hidden; /* Blokada przewijania przy dużym przycisku */
-            transition: background 0.5s;
+            padding: 10px;
+            overflow: hidden; /* Blokada przewijania */
+            transition: background-image 1s ease-in-out;
         }
 
         #container {
             position: relative;
             z-index: 10;
-            padding: 20px;
+            width: 100%;
+            max-width: 600px;
         }
 
         h1 {
-            color: #d63384;
-            font-size: 2rem;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            color: #d63384; /* Ciemny róż */
+            font-size: clamp(2rem, 6vw, 3.5rem); /* Skalowanie czcionki */
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+            line-height: 1.2;
+            padding: 0 10px;
         }
 
         img {
-            max-width: 100%;
+            width: 80%;
+            max-width: 350px;
             height: auto;
-            max-height: 300px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
             object-fit: cover;
+            border: 5px solid white;
         }
 
         .buttons {
@@ -58,45 +56,61 @@
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
+            width: 100%;
+            position: relative;
         }
 
         button {
             font-family: 'Dancing Script', cursive;
             font-size: 1.5rem;
-            padding: 10px 30px;
+            padding: 12px 30px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             font-weight: bold;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
         }
 
         #yesBtn {
             background-color: #ff4d6d;
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            z-index: 50; /* Zawsze na wierzchu */
+            white-space: nowrap; /* Tekst w jednej linii */
         }
 
         #noBtn {
             background-color: #fff;
             color: #ff4d6d;
             border: 2px solid #ff4d6d;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         #extraText {
             color: #6c757d;
-            font-size: 1.1rem;
-            margin-top: 20px;
-            min-height: 30px;
+            font-size: 1.2rem;
+            min-height: 1.5em;
             font-weight: bold;
+            margin-top: 25px;
+            padding: 0 15px;
         }
 
-        /* Klasa dla fajerwerków po zgodzie */
+        /* Klasa dodawana po zgodzie - fajerwerki */
         .fireworks-bg {
             background-image: url('https://media.giphy.com/media/26tOZ42Mg6pbTUPVS/giphy.gif');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             background-repeat: no-repeat;
+        }
+        
+        /* Ukryta ramka do cichego wysyłania formularza */
+        #hiddenFrame {
+            display: none;
+            width: 0; 
+            height: 0;
         }
     </style>
 </head>
@@ -115,83 +129,98 @@
         <p id="extraText"></p>
     </div>
 
+    <iframe name="hiddenFrame" id="hiddenFrame"></iframe>
+
     <script>
+        // --- KONFIGURACJA FORMULARZA ---
+        // Wyciągnąłem ID z Twojego linku: entry.1965106548
+        const GOOGLE_FORM_ID = "1FAIpQLSe9MH7hVkXIIVXN0__H-EqvO3czwqOmydGc28rUb6bmSFLrHQ";
+        const ENTRY_ID = "entry.1965106548";
+        // -------------------------------
+
         let noClickCount = 0;
-        let attempts = 1; // Licznik prób (startujemy od 1)
+        let attempts = 1;
         
         const noTexts = [
-            "Na pewno?", 
+            "Na pewno? 🥺", 
             "Zastanów się jeszcze raz...", 
-            "Proszę, nie rób mi tego 🥺", 
-            "Złamiesz mi serduszko! 💔", 
-            "Obiecuję, że będzie fajnie!",
+            "Będzie fajnie, obiecuję!", 
+            "Łamiesz mi serduszko! 💔", 
             "Kotek będzie płakał...",
-            "Już nie masz wyjścia..."
+            "Nie rób mi tego...",
+            "Już nie masz wyjścia! 😈"
         ];
 
         function handleNo() {
             noClickCount++;
-            attempts++; // Każde kliknięcie "Nie" zwiększa licznik prób
+            attempts++;
             
-            // Zmiana tekstu pod przyciskami
+            // 1. Zmiana tekstu pod przyciskami
             const textIndex = (noClickCount - 1) % noTexts.length;
             document.getElementById('extraText').innerText = noTexts[textIndex];
 
-            // Powiększanie przycisku TAK
+            // 2. Logika powiększania przycisku TAK
             const yesBtn = document.getElementById('yesBtn');
             
-            // Obliczanie nowej wielkości
-            let newSize = 1.5 + (noClickCount * 1.5); 
-            let newPadding = 10 + (noClickCount * 10);
-            
-            yesBtn.style.fontSize = `${newSize}rem`;
-            yesBtn.style.padding = `${newPadding}px ${newPadding * 2}px`;
-
-            // Jeśli przycisk jest za duży, zajmij cały ekran
-            if (noClickCount > 4) {
+            if (noClickCount <= 5) {
+                // Faza wzrostu
+                let scale = 1 + (noClickCount * 0.4); 
+                yesBtn.style.transform = `scale(${scale})`;
+                // Przesuwamy marginesy, żeby przyciski na siebie nie wchodziły
+                yesBtn.style.marginRight = `${noClickCount * 15}px`;
+            } else {
+                // Faza: NIE MASZ WYJŚCIA (Pełny ekran)
                 yesBtn.style.position = "fixed";
                 yesBtn.style.top = "0";
                 yesBtn.style.left = "0";
                 yesBtn.style.width = "100vw";
                 yesBtn.style.height = "100vh";
-                yesBtn.style.zIndex = "1000";
+                yesBtn.style.transform = "scale(1)"; // Reset skali, ustawiamy na sztywno
+                yesBtn.style.borderRadius = "0";
+                yesBtn.style.margin = "0";
                 yesBtn.style.display = "flex";
                 yesBtn.style.alignItems = "center";
                 yesBtn.style.justifyContent = "center";
-                yesBtn.innerText = "TAK (Już musisz się zgodzić) ❤️";
+                
+                // Zajebista, wielka czcionka, ale dopasowana do szerokości ekranu (vw)
+                yesBtn.style.fontSize = "12vw"; 
+                yesBtn.innerText = "TAK (Musisz!) ❤️";
+                
+                // Ukrywamy przycisk NIE
+                document.getElementById('noBtn').style.display = 'none';
+                document.getElementById('extraText').innerText = "";
             }
         }
 
         function handleYes() {
-            // Zmiana wyglądu strony na sukces
+            // 1. ZMIANA WYGLĄDU (SUKCES)
             document.body.classList.add('fireworks-bg');
             document.getElementById('mainQuestion').innerText = "Zostałaś moją walentynką! 💞";
             
-            // Zmiana obrazka na fajerwerki/świętowanie
-            document.getElementById('mainImage').src = "https://media.giphy.com/media/l41Yh18f5TBiDRw0E/giphy.gif"; 
+            // Zmiana GIFa na tulące się kotki
+            document.getElementById('mainImage').src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTVlYzl4M2V4Y2E4OW44b3V4eW44b3V4eW44b3V4eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbxxvDUQM/giphy.gif"; 
             
+            // Czyszczenie interfejsu
             document.getElementById('extraText').innerText = "";
-            document.querySelector('.buttons').style.display = 'none'; // Ukrycie przycisków
+            document.querySelector('.buttons').style.display = 'none';
+            document.querySelector('.buttons').innerHTML = ""; // Usunięcie przycisków z DOM
 
-            // Wyślij maila z liczbą prób
-            sendEmail(attempts);
+            // 2. WYSYŁANIE DANYCH DO GOOGLE FORMS
+            sendToGoogleSheets(attempts);
         }
 
-        function sendEmail(count) {
-            // Parametry wysyłane do szablonu EmailJS
-            const templateParams = {
-                message: `Została Twoją walentynką za ${count} razem!`
-            };
+        function sendToGoogleSheets(count) {
+            // Budowanie wiadomości
+            const message = `Zgodziła się za ${count} razem`;
+            
+            // Konstrukcja linku, który "wysyła" formularz bez otwierania go
+            // Używamy endpointu 'formResponse'
+            let submitUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse?usp=pp_url&${ENTRY_ID}=${encodeURIComponent(message)}&submit=Submit`;
 
-            // Twoje Service ID i Template ID
-            emailjs.send("service_6nb72vj", "template_xsdrfnz", templateParams)
-                .then(function(response) {
-                   console.log('SUKCES! Mail wysłany.', response.status, response.text);
-                   // Opcjonalnie: alert dla Ciebie do testów (możesz usunąć linię poniżej, żeby jej nie straszyć)
-                   // alert("Filip, mail wysłany! Sprawdź skrzynkę."); 
-                }, function(error) {
-                   console.log('BŁĄD WYSYŁANIA...', error);
-                });
+            // Załadowanie tego linku w ukrytej ramce
+            document.getElementById('hiddenFrame').src = submitUrl;
+            
+            console.log("Wysłano informację: " + message);
         }
     </script>
 </body>
