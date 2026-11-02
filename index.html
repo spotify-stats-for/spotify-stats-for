@@ -2,226 +2,605 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ważne pytanie! ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serwer Minecraft - Owiedzgi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Stylizacja ogólna */
-        body {
-            font-family: 'Pacifico', cursive;
-            background-color: #ffe6e6; /* Jasny róż */
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 10px;
-            overflow: hidden; /* Blokada przewijania */
-            transition: background-image 1s ease-in-out;
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --accent: #34d399;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --bg-image: url('https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=1920&auto=format&fit=crop');
         }
 
-        #container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        h1 {
-            color: #d63384; /* Ciemny róż */
-            font-size: clamp(2rem, 6vw, 3.5rem); /* Skalowanie czcionki */
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
-            line-height: 1.2;
-            padding: 0 10px;
-        }
-
-        img {
-            width: 80%;
-            max-width: 350px;
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            object-fit: cover;
-            border: 5px solid white;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            width: 100%;
-            position: relative;
-        }
-
-        button {
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.5rem;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            font-weight: bold;
-            -webkit-tap-highlight-color: transparent;
+        * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        #yesBtn {
-            background-color: #ff4d6d;
-            color: white;
-            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-            z-index: 50; /* Zawsze na wierzchu */
-            white-space: nowrap; /* Tekst w jednej linii */
-        }
-
-        #noBtn {
-            background-color: #fff;
-            color: #ff4d6d;
-            border: 2px solid #ff4d6d;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        #extraText {
-            color: #6c757d;
-            font-size: 1.2rem;
-            min-height: 1.5em;
-            font-weight: bold;
-            margin-top: 25px;
-            padding: 0 15px;
-        }
-
-        /* Klasa dodawana po zgodzie - fajerwerki */
-        .fireworks-bg {
-            background-image: url('https://media.giphy.com/media/26tOZ42Mg6pbTUPVS/giphy.gif');
+        body {
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), var(--bg-image);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-repeat: no-repeat;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        
-        /* Ukryta ramka do cichego wysyłania formularza */
-        #hiddenFrame {
+
+        /* Nav */
+        header {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .server-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .server-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a, .admin-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .admin-btn {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--primary);
+        }
+
+        .admin-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .ip-box {
+            display: inline-flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            gap: 1rem;
+            margin-top: 1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .ip-text { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: var(--accent); }
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .copy-btn:hover { background: var(--primary-hover); }
+
+        /* Sections */
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .rules-list {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .rules-list ol {
+            padding-left: 1.2rem;
+        }
+
+        .rules-list li {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .gallery-caption {
+            padding: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Modals */
+        .modal {
             display: none;
-            width: 0; 
-            height: 0;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger { background: #ef4444; }
+        .btn-secondary { background: #475569; }
+
+        /* Admin Items List */
+        .admin-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            gap: 1rem;
+        }
+
+        .admin-list-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <div id="container">
-        <h1 id="mainQuestion">Zostaniesz moją walentynką?</h1>
-        
-        <img id="mainImage" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Słodki kotek">
-        
-        <div class="buttons">
-            <button id="yesBtn" onclick="handleYes()">Tak</button>
-            <button id="noBtn" onclick="handleNo()">Nie</button>
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo-container">
+                <img id="display-avatar" src="https://via.placeholder.com/150/10b981/ffffff?text=O" class="server-avatar" alt="Logo">
+                <span class="server-name" id="display-name">Owiedzgi</span>
+            </a>
+            <div class="nav-links">
+                <a href="#regulamin">Regulamin</a>
+                <a href="#galeria">Galeria</a>
+                <button class="admin-btn" onclick="openAdminModal()"><i class="fa-solid fa-lock"></i> Admin</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <section class="hero">
+            <h1 id="hero-title">Witaj na Owiedzgi!</h1>
+            <p style="color: var(--text-muted); font-size: 1.2rem;">Oficjalna strona serwera Minecraft.</p>
+            <div class="ip-box">
+                <span class="ip-text">owiedzgi.pl</span>
+                <button class="copy-btn" onclick="copyIp()"><i class="fa-regular fa-copy"></i> Kopiuj IP</button>
+            </div>
+        </section>
+
+        <h2 class="section-title" id="regulamin">Regulamin Serwera</h2>
+        <div class="rules-list">
+            <ol id="display-rules">
+                <!-- Zasady będą tu generowane dynamicznie -->
+            </ol>
         </div>
 
-        <p id="extraText"></p>
+        <h2 class="section-title" id="galeria">Galeria Serwera</h2>
+        <div class="gallery-grid" id="display-gallery">
+            <!-- Zdjęcia galerii będą tu generowane dynamicznie -->
+        </div>
     </div>
 
-    <iframe name="hiddenFrame" id="hiddenFrame"></iframe>
+    <!-- Modal Login -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Panel Administratora</h3>
+                <button class="close-btn" onclick="closeModal('login-modal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Wprowadź kod PIN:</label>
+                <input type="password" id="admin-pin" class="form-control" placeholder="****">
+            </div>
+            <button class="btn" style="width:100%" onclick="loginAdmin()">Zaloguj</button>
+        </div>
+    </div>
+
+    <!-- Modal Admin Dashboard -->
+    <div class="modal" id="admin-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Zarządzanie Stroną</h3>
+                <button class="close-btn" onclick="closeModal('admin-modal')">&times;</button>
+            </div>
+
+            <!-- Ustawienia Ogólne -->
+            <h4 style="margin-bottom: 1rem; color: var(--accent);">Główne Ustawienia</h4>
+            <div class="form-group">
+                <label>Awatar / Profilowe Serwera</label>
+                <input type="file" id="input-avatar-file" class="form-control" accept="image/*" onchange="handleAvatarUpload(event)">
+            </div>
+            <div class="form-group">
+                <label>Tło Strony</label>
+                <input type="file" id="input-bg-file" class="form-control" accept="image/*" onchange="handleBgUpload(event)">
+            </div>
+
+            <hr style="border-color: var(--border); margin: 2rem 0;">
+
+            <!-- Edycja Regulaminu -->
+            <h4 style="margin-bottom: 1rem; color: var(--accent);">Edycja Regulaminu</h4>
+            <div class="form-group" style="display:flex; gap:0.5rem;">
+                <input type="text" id="new-rule-input" class="form-control" placeholder="Wpisz treść nowej zasady...">
+                <button class="btn" onclick="addRule()">Dodaj</button>
+            </div>
+            <div id="admin-rules-list"></div>
+
+            <hr style="border-color: var(--border); margin: 2rem 0;">
+
+            <!-- Zarządzanie Galerią -->
+            <h4 style="margin-bottom: 1rem; color: var(--accent);">Zarządzanie Galerią (Segregacja i Zdjęcia)</h4>
+            <div class="form-group">
+                <label>Dodaj Nowe Zdjęcie do Galerii</label>
+                <input type="file" id="input-gallery-file" class="form-control" accept="image/*" onchange="handleGalleryUpload(event)">
+                <input type="text" id="input-gallery-caption" class="form-control" placeholder="Podpis zdjęcia..." style="margin-top:0.5rem;">
+            </div>
+            <div id="admin-gallery-list"></div>
+
+            <hr style="border-color: var(--border); margin: 2rem 0;">
+            <button class="btn btn-secondary" style="width: 100%; font-size: 1.1rem;" onclick="downloadStaticHTML()">
+                <i class="fa-solid fa-download"></i> Pobierz gotowy kod HTML z zaszytymi zdjęciami
+            </button>
+        </div>
+    </div>
 
     <script>
-        // --- KONFIGURACJA FORMULARZA ---
-        // Wyciągnąłem ID z Twojego linku: entry.1965106548
-        const GOOGLE_FORM_ID = "1FAIpQLSe9MH7hVkXIIVXN0__H-EqvO3czwqOmydGc28rUb6bmSFLrHQ";
-        const ENTRY_ID = "entry.1965106548";
-        // -------------------------------
+        // Domyślny Stan Danych
+        let state = {
+            avatar: 'https://via.placeholder.com/150/10b981/ffffff?text=O',
+            bgImage: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=1920&auto=format&fit=crop',
+            rules: [
+                "Szanuj innych graczy oraz administrację.",
+                "Zakaz używania modyfikacji dających przewagę (cheaty, xray).",
+                "Zakaz reklamy innych serwerów."
+            ],
+            gallery: []
+        };
 
-        let noClickCount = 0;
-        let attempts = 1;
-        
-        const noTexts = [
-            "Na pewno? 🥺", 
-            "Zastanów się jeszcze raz...", 
-            "Będzie fajnie, obiecuję!", 
-            "Łamiesz mi serduszko! 💔", 
-            "Kotek będzie płakał...",
-            "Nie rób mi tego...",
-            "Już nie masz wyjścia! 😈"
-        ];
+        // Wczytanie z localStorage
+        function loadState() {
+            const saved = localStorage.getItem('owiedzgi_state');
+            if (saved) {
+                try { state = JSON.parse(saved); } catch(e){}
+            }
+            renderApp();
+        }
 
-        function handleNo() {
-            noClickCount++;
-            attempts++;
-            
-            // 1. Zmiana tekstu pod przyciskami
-            const textIndex = (noClickCount - 1) % noTexts.length;
-            document.getElementById('extraText').innerText = noTexts[textIndex];
+        function saveState() {
+            localStorage.setItem('owiedzgi_state', JSON.stringify(state));
+            renderApp();
+        }
 
-            // 2. Logika powiększania przycisku TAK
-            const yesBtn = document.getElementById('yesBtn');
-            
-            if (noClickCount <= 5) {
-                // Faza wzrostu
-                let scale = 1 + (noClickCount * 0.4); 
-                yesBtn.style.transform = `scale(${scale})`;
-                // Przesuwamy marginesy, żeby przyciski na siebie nie wchodziły
-                yesBtn.style.marginRight = `${noClickCount * 15}px`;
+        // Renderowanie danych na stronie
+        function renderApp() {
+            document.getElementById('display-avatar').src = state.avatar;
+            document.documentElement.style.setProperty('--bg-image', `url('${state.bgImage}')`);
+
+            // Regulamin
+            const rulesEl = document.getElementById('display-rules');
+            rulesEl.innerHTML = state.rules.map(r => `<li>${r}</li>`).join('');
+
+            // Galeria
+            const galleryEl = document.getElementById('display-gallery');
+            if(state.gallery.length === 0) {
+                galleryEl.innerHTML = '<p style="color:var(--text-muted); grid-column: 1/-1;">Brak zdjęć w galerii. Dodaj je w Panelu Admina!</p>';
             } else {
-                // Faza: NIE MASZ WYJŚCIA (Pełny ekran)
-                yesBtn.style.position = "fixed";
-                yesBtn.style.top = "0";
-                yesBtn.style.left = "0";
-                yesBtn.style.width = "100vw";
-                yesBtn.style.height = "100vh";
-                yesBtn.style.transform = "scale(1)"; // Reset skali, ustawiamy na sztywno
-                yesBtn.style.borderRadius = "0";
-                yesBtn.style.margin = "0";
-                yesBtn.style.display = "flex";
-                yesBtn.style.alignItems = "center";
-                yesBtn.style.justifyContent = "center";
-                
-                // Zajebista, wielka czcionka, ale dopasowana do szerokości ekranu (vw)
-                yesBtn.style.fontSize = "12vw"; 
-                yesBtn.innerText = "TAK (Musisz!) ❤️";
-                
-                // Ukrywamy przycisk NIE
-                document.getElementById('noBtn').style.display = 'none';
-                document.getElementById('extraText').innerText = "";
+                galleryEl.innerHTML = state.gallery.map(img => `
+                    <div class="gallery-card">
+                        <img src="${img.url}" class="gallery-img" onclick="window.open('${img.url}')">
+                        <div class="gallery-caption">${img.caption || 'Zdjęcie z serwera'}</div>
+                    </div>
+                `).join('');
             }
         }
 
-        function handleYes() {
-            // 1. ZMIANA WYGLĄDU (SUKCES)
-            document.body.classList.add('fireworks-bg');
-            document.getElementById('mainQuestion').innerText = "Zostałaś moją walentynką! 💞";
-            
-            // Zmiana GIFa na tulące się kotki
-            document.getElementById('mainImage').src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTVlYzl4M2V4Y2E4OW44b3V4eW44b3V4eW44b3V4eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbxxvDUQM/giphy.gif"; 
-            
-            // Czyszczenie interfejsu
-            document.getElementById('extraText').innerText = "";
-            document.querySelector('.buttons').style.display = 'none';
-            document.querySelector('.buttons').innerHTML = ""; // Usunięcie przycisków z DOM
-
-            // 2. WYSYŁANIE DANYCH DO GOOGLE FORMS
-            sendToGoogleSheets(attempts);
+        /* --- Funkcje Admina --- */
+        function openAdminModal() {
+            document.getElementById('login-modal').style.display = 'flex';
         }
 
-        function sendToGoogleSheets(count) {
-            // Budowanie wiadomości
-            const message = `Zgodziła się za ${count} razem`;
-            
-            // Konstrukcja linku, który "wysyła" formularz bez otwierania go
-            // Używamy endpointu 'formResponse'
-            let submitUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse?usp=pp_url&${ENTRY_ID}=${encodeURIComponent(message)}&submit=Submit`;
-
-            // Załadowanie tego linku w ukrytej ramce
-            document.getElementById('hiddenFrame').src = submitUrl;
-            
-            console.log("Wysłano informację: " + message);
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
         }
+
+        function loginAdmin() {
+            const pin = document.getElementById('admin-pin').value;
+            if (pin === '7328') {
+                closeModal('login-modal');
+                document.getElementById('admin-modal').style.display = 'flex';
+                renderAdminPanel();
+            } else {
+                alert('Błędny PIN!');
+            }
+        }
+
+        function renderAdminPanel() {
+            // Render Regulaminu
+            const adminRulesEl = document.getElementById('admin-rules-list');
+            adminRulesEl.innerHTML = state.rules.map((rule, idx) => `
+                <div class="admin-list-item">
+                    <span>${idx + 1}. ${rule}</span>
+                    <button class="btn btn-danger btn-icon" onclick="deleteRule(${idx})"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+
+            // Render Galerii
+            const adminGalleryEl = document.getElementById('admin-gallery-list');
+            adminGalleryEl.innerHTML = state.gallery.map((img, idx) => `
+                <div class="admin-list-item">
+                    <img src="${img.url}">
+                    <span style="flex-grow:1; margin:0 1rem; text-overflow:ellipsis; overflow:hidden;">${img.caption || 'Bez podpisu'}</span>
+                    <div class="item-actions">
+                        <button class="btn btn-secondary btn-icon" ${idx === 0 ? 'disabled' : ''} onclick="moveGallery(${idx}, -1)">⬆</button>
+                        <button class="btn btn-secondary btn-icon" ${idx === state.gallery.length - 1 ? 'disabled' : ''} onclick="moveGallery(${idx}, 1)">⬇</button>
+                        <button class="btn btn-danger btn-icon" onclick="deleteGallery(${idx})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Konwersja Plików do Base64
+        function fileToBase64(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) { callback(e.target.result); };
+            reader.readAsDataURL(file);
+        }
+
+        function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if(file) fileToBase64(file, base64 => { state.avatar = base64; saveState(); });
+        }
+
+        function handleBgUpload(e) {
+            const file = e.target.files[0];
+            if(file) fileToBase64(file, base64 => { state.bgImage = base64; saveState(); });
+        }
+
+        function handleGalleryUpload(e) {
+            const file = e.target.files[0];
+            const caption = document.getElementById('input-gallery-caption').value;
+            if(file) {
+                fileToBase64(file, base64 => {
+                    state.gallery.push({ url: base64, caption: caption });
+                    document.getElementById('input-gallery-caption').value = '';
+                    document.getElementById('input-gallery-file').value = '';
+                    saveState();
+                    renderAdminPanel();
+                });
+            }
+        }
+
+        // Regulamin Logic
+        function addRule() {
+            const val = document.getElementById('new-rule-input').value.trim();
+            if(val) {
+                state.rules.push(val);
+                document.getElementById('new-rule-input').value = '';
+                saveState();
+                renderAdminPanel();
+            }
+        }
+
+        function deleteRule(idx) {
+            state.rules.splice(idx, 1);
+            saveState();
+            renderAdminPanel();
+        }
+
+        // Segregacja Galerii
+        function moveGallery(idx, direction) {
+            const target = idx + direction;
+            if(target >= 0 && target < state.gallery.length) {
+                const temp = state.gallery[idx];
+                state.gallery[idx] = state.gallery[target];
+                state.gallery[target] = temp;
+                saveState();
+                renderAdminPanel();
+            }
+        }
+
+        function deleteGallery(idx) {
+            state.gallery.splice(idx, 1);
+            saveState();
+            renderAdminPanel();
+        }
+
+        function copyIp() {
+            navigator.clipboard.writeText("owiedzgi.pl");
+            alert("Skopiowano IP: owiedzgi.pl");
+        }
+
+        // Pobieranie Zaktualizowanego Pliku HTML na GitHub Pages
+        function downloadStaticHTML() {
+            const currentDoc = document.documentElement.outerHTML;
+            const stateJson = JSON.stringify(state);
+            const updatedDoc = currentDoc.replace(/let state = \{[\s\S]*?\};/, `let state = ${stateJson};`);
+
+            const blob = new Blob([updatedDoc], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'index.html';
+            a.click();
+        }
+
+        // Inicjalizacja
+        loadState();
     </script>
 </body>
 </html>
