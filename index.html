@@ -440,10 +440,43 @@
             border-radius: 8px;
         }
 
+        /* Cookie Banner Popup */
+        .cookie-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 2rem);
+            max-width: 600px;
+            background: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .cookie-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .cookie-text a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
         @media (max-width: 600px) {
             .nav-container { justify-content: center; }
             .hero { padding: 1.5rem 0.5rem; }
             .main-container { padding: 1rem; }
+            .cookie-banner { flex-direction: column; align-items: stretch; text-align: center; }
         }
     </style>
 </head>
@@ -498,6 +531,14 @@
 
         <h2 class="section-title" id="galeria">Galeria Serwera</h2>
         <div class="gallery-grid" id="display-gallery"></div>
+    </div>
+
+    <!-- Cookie Banner Popup -->
+    <div class="cookie-banner" id="cookie-banner">
+        <div class="cookie-text">
+            Ta strona używa plików cookies oraz pamięci lokalnej w celu poprawnego działania panelu i statystyk. Korzystając z niej, wyrażasz zgodę.
+        </div>
+        <button class="btn" onclick="acceptCookies()">Akceptuję</button>
     </div>
 
     <!-- Lightbox Preview -->
@@ -611,7 +652,7 @@
 
             <hr style="border-color: var(--border); margin: 1.5rem 0;">
             <button class="btn btn-secondary" style="width: 100%; font-size: 1rem;" onclick="downloadStaticHTML()">
-                <i class="fa-solid fa-download"></i> Pobierz gotowy kod HTML z zaszytymi zdjęciami
+                <i class="fa-solid fa-download"></i> Pobierz gotowy kod HTML (dla graczy na serwer)
             </button>
         </div>
     </div>
@@ -639,6 +680,7 @@
                 try { state = Object.assign({}, state, JSON.parse(saved)); } catch(e){}
             }
             renderApp();
+            checkCookies();
         }
 
         function saveState() {
@@ -679,6 +721,17 @@
                     </div>
                 `).join('');
             }
+        }
+
+        function checkCookies() {
+            if (!localStorage.getItem('cookie_accepted')) {
+                document.getElementById('cookie-banner').style.display = 'flex';
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('cookie_accepted', 'true');
+            document.getElementById('cookie-banner').style.display = 'none';
         }
 
         function openLightbox(url) {
