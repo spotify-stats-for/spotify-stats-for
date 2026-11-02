@@ -216,6 +216,37 @@
         }
         .copy-btn:hover { background: var(--primary-hover); }
 
+        /* Server Age & Anniversary Cards */
+        .server-time-info {
+            max-width: 800px;
+            margin: 1.5rem auto 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .time-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+            text-align: center;
+        }
+
+        .time-box i {
+            color: var(--accent);
+            margin-right: 6px;
+        }
+
+        .time-box .time-value {
+            font-weight: 700;
+            color: var(--primary);
+            font-family: monospace;
+            font-size: 1.05rem;
+            margin-top: 0.3rem;
+        }
+
         .section-title {
             font-size: 1.8rem;
             margin-bottom: 1.2rem;
@@ -467,11 +498,6 @@
             line-height: 1.4;
         }
 
-        .cookie-text a {
-            color: var(--primary);
-            text-decoration: underline;
-        }
-
         @media (max-width: 600px) {
             .nav-container { justify-content: center; }
             .hero { padding: 1.5rem 0.5rem; }
@@ -521,6 +547,18 @@
             <div class="ip-box">
                 <span class="ip-text" id="display-ip">owiedzgi.pl</span>
                 <button class="copy-btn" onclick="copyIp()"><i class="fa-regular fa-copy"></i> Kopiuj IP</button>
+            </div>
+
+            <!-- Liczniki czasu istnienia serwera i rocznicy -->
+            <div class="server-time-info">
+                <div class="time-box">
+                    <div><i class="fa-solid fa-hourglass-start"></i> Czas działania serwera (od 25.09.2025):</div>
+                    <div class="time-value" id="server-uptime">Ładowanie...</div>
+                </div>
+                <div class="time-box">
+                    <div><i class="fa-solid fa-cake-candles"></i> Do następnej rocznicy serwera (25 września) pozostało:</div>
+                    <div class="time-value" id="server-anniversary">Ładowanie...</div>
+                </div>
             </div>
         </section>
 
@@ -722,6 +760,55 @@
                 `).join('');
             }
         }
+
+        // Dynamiczne liczniki czasu serwera
+        function updateServerTimers() {
+            const birthDate = new Date('2025-09-25T00:00:00');
+            const now = new Date();
+
+            // Obliczanie wieku serwera
+            let years = now.getFullYear() - birthDate.getFullYear();
+            let months = now.getMonth() - birthDate.getMonth();
+            let days = now.getDate() - birthDate.getDate();
+
+            if (days < 0) {
+                months--;
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const diffTime = now - birthDate;
+            const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            let ageString = "";
+            if (years > 0) ageString += `${years} lat(a) `;
+            if (months > 0 || years > 0) ageString += `${months} mies. `;
+            ageString += `${days} dni, ${hours}h ${minutes}m ${seconds}s`;
+            document.getElementById('server-uptime').innerText = ageString;
+
+            // Obliczanie czasu do następnej rocznicy (25 września)
+            let nextAnniversary = new Date(now.getFullYear(), 8, 25); // Miesiąc 8 to wrzesień (0-indexed)
+            if (now > nextAnniversary) {
+                nextAnniversary.setFullYear(now.getFullYear() + 1);
+            }
+            const diffAnniv = nextAnniversary - now;
+            const annivDays = Math.floor(diffAnniv / (1000 * 60 * 60 * 24));
+            const annivHours = Math.floor((diffAnniv % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const annivMinutes = Math.floor((diffAnniv % (1000 * 60 * 60)) / (1000 * 60));
+            const annivSeconds = Math.floor((diffAnniv % (1000 * 60)) / 1000);
+
+            document.getElementById('server-anniversary').innerText = `${annivDays} dni, ${annivHours}h ${annivMinutes}m ${annivSeconds}s`;
+        }
+
+        setInterval(updateServerTimers, 1000);
+        updateServerTimers();
 
         function checkCookies() {
             if (!localStorage.getItem('cookie_accepted')) {
