@@ -1,806 +1,912 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Serwer Minecraft - Owiedzgi</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<style>
-:root {
---bg-dark: #0f172a;
---card-bg: rgba(30, 41, 59, 0.75);
---primary: #10b981;
---primary-hover: #059669;
---accent: #34d399;
---text-main: #f8fafc;
---text-muted: #94a3b8;
---border: rgba(255, 255, 255, 0.1);
---status-online: #10b981;
---status-maintenance: #f59e0b;
---status-offline: #ef4444;
---bg-image: url('https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=1920&auto=format&fit=crop');
-}
-​* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-​body {
-background-color: var(--bg-dark);
-background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), var(--bg-image);
-background-size: cover;
-background-position: center;
-background-attachment: fixed;
-color: var(--text-main);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-}
-​/* Nav */
-header {
-background: rgba(15, 23, 42, 0.95);
-backdrop-filter: blur(10px);
-border-bottom: 1px solid var(--border);
-position: sticky;
-top: 0;
-z-index: 100;
-}
-​.nav-container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 1rem 1.5rem;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-wrap: wrap;
-gap: 1rem;
-}
-​.logo-container {
-display: flex;
-align-items: center;
-gap: 12px;
-text-decoration: none;
-color: var(--text-main);
-}
-​.server-avatar {
-width: 45px;
-height: 45px;
-border-radius: 8px;
-object-fit: cover;
-border: 2px solid var(--primary);
-}
-​.server-name {
-font-size: 1.5rem;
-font-weight: 800;
-letter-spacing: 1px;
-color: var(--primary);
-}
-​.nav-links {
-display: flex;
-gap: 1.2rem;
-align-items: center;
-}
-​.nav-links a, .admin-btn {
-color: var(--text-muted);
-text-decoration: none;
-font-weight: 600;
-transition: 0.2s;
-cursor: pointer;
-font-size: 0.95rem;
-}
-​.nav-links a:hover { color: var(--primary); }
-​.admin-btn {
-background: rgba(16, 185, 129, 0.1);
-color: var(--primary);
-padding: 0.5rem 1rem;
-border-radius: 6px;
-border: 1px solid var(--primary);
-}
-​.admin-btn:hover {
-background: var(--primary);
-color: white;
-}
-​/* Container */
-.main-container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 1.5rem;
-flex-grow: 1;
-width: 100%;
-}
-​/* Hero */
-.hero {
-text-align: center;
-padding: 2.5rem 1rem;
-margin-bottom: 2rem;
-}
-​.hero h1 {
-font-size: clamp(2rem, 5vw, 3.5rem);
-margin-bottom: 0.8rem;
-text-transform: uppercase;
-letter-spacing: 2px;
-}
-​/* Dynamic Status & Info Bar */
-.status-badge {
-display: inline-flex;
-align-items: center;
-gap: 8px;
-padding: 0.4rem 1rem;
-border-radius: 20px;
-font-weight: 700;
-font-size: 0.9rem;
-margin-bottom: 1.5rem;
-background: rgba(15, 23, 42, 0.8);
-border: 1px solid var(--border);
-}
-​.status-dot {
-width: 10px;
-height: 10px;
-border-radius: 50%;
-}
-​.status-online { background-color: var(--status-online); box-shadow: 0 0 10px var(--status-online); }
-.status-maintenance { background-color: var(--status-maintenance); box-shadow: 0 0 10px var(--status-maintenance); }
-.status-offline { background-color: var(--status-offline); box-shadow: 0 0 10px var(--status-offline); }
-​.stats-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-gap: 1rem;
-max-width: 800px;
-margin: 0 auto 1.5rem auto;
-}
-​.stat-card {
-background: var(--card-bg);
-border: 1px solid var(--border);
-border-radius: 10px;
-padding: 1rem;
-backdrop-filter: blur(5px);
-}
-​.stat-card i {
-font-size: 1.5rem;
-color: var(--primary);
-margin-bottom: 0.5rem;
-}
-​.stat-card .val {
-font-size: 1.3rem;
-font-weight: 800;
-}
-​.stat-card .lbl {
-font-size: 0.85rem;
-color: var(--text-muted);
-}
-​.ip-box {
-display: inline-flex;
-align-items: center;
-background: var(--card-bg);
-border: 1px solid var(--border);
-padding: 0.6rem 1.2rem;
-border-radius: 50px;
-gap: 1rem;
-margin-top: 0.5rem;
-backdrop-filter: blur(5px);
-flex-wrap: wrap;
-justify-content: center;
-}
-​.ip-text { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: var(--accent); }
-.copy-btn {
-background: var(--primary);
-color: white;
-border: none;
-padding: 0.5rem 1rem;
-border-radius: 20px;
-cursor: pointer;
-font-weight: bold;
-transition: 0.2s;
-}
-.copy-btn:hover { background: var(--primary-hover); }
-​/* Sections */
-.section-title {
-font-size: 1.8rem;
-margin-bottom: 1.2rem;
-border-left: 4px solid var(--primary);
-padding-left: 1rem;
-}
-​.rules-list {
-background: var(--card-bg);
-border: 1px solid var(--border);
-border-radius: 12px;
-padding: 1.5rem;
-margin-bottom: 3rem;
-backdrop-filter: blur(5px);
-}
-​.rules-list ol {
-padding-left: 1.2rem;
-}
-​.rules-list li {
-margin-bottom: 0.8rem;
-font-size: 1.05rem;
-color: #cbd5e1;
-word-break: break-word;
-}
-​/* Gallery Grid (No Crop Fix) */
-.gallery-grid {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-gap: 1.5rem;
-margin-bottom: 3rem;
-}
-​.gallery-card {
-background: var(--card-bg);
-border: 1px solid var(--border);
-border-radius: 12px;
-overflow: hidden;
-backdrop-filter: blur(5px);
-display: flex;
-flex-direction: column;
-}
-​.gallery-img-wrapper {
-width: 100%;
-height: 220px;
-background: rgba(0, 0, 0, 0.4);
-display: flex;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-cursor: pointer;
-}
-​.gallery-img {
-max-width: 100%;
-max-height: 100%;
-width: auto;
-height: auto;
-object-fit: contain;
-transition: transform 0.3s;
-}
-​.gallery-card:hover .gallery-img {
-transform: scale(1.03);
-}
-​.gallery-caption {
-padding: 1rem;
-font-weight: 600;
-text-align: center;
-border-top: 1px solid var(--border);
-word-break: break-word;
-}
-​/* Modals */
-.modal {
-display: none;
-position: fixed;
-top: 0; left: 0; width: 100%; height: 100%;
-background: rgba(0,0,0,0.85);
-backdrop-filter: blur(8px);
-z-index: 1000;
-justify-content: center;
-align-items: center;
-padding: 1rem;
-}
-​.modal-content {
-background: #1e293b;
-border: 1px solid var(--border);
-border-radius: 12px;
-padding: 1.5rem;
-max-width: 700px;
-width: 100%;
-max-height: 90vh;
-overflow-y: auto;
-}
-​.modal-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 1.5rem;
-}
-​.close-btn {
-background: none;
-border: none;
-color: var(--text-muted);
-font-size: 1.5rem;
-cursor: pointer;
-}
-​/* Form elements */
-.form-group {
-margin-bottom: 1.2rem;
-}
-​.form-group label {
-display: block;
-margin-bottom: 0.5rem;
-font-weight: 600;
-font-size: 0.9rem;
-}
-​.form-control {
-width: 100%;
-padding: 0.75rem;
-background: #0f172a;
-border: 1px solid var(--border);
-border-radius: 6px;
-color: white;
-font-size: 0.95rem;
-}
-​.form-row {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-gap: 1rem;
-}
-​.tab-buttons {
-display: flex;
-gap: 0.5rem;
-margin-bottom: 0.5rem;
-}
-​.tab-btn {
-background: #0f172a;
-border: 1px solid var(--border);
-color: var(--text-muted);
-padding: 0.4rem 0.8rem;
-border-radius: 4px;
-cursor: pointer;
-font-size: 0.85rem;
-}
-​.tab-btn.active {
-background: var(--primary);
-color: white;
-border-color: var(--primary);
-}
-​.btn {
-padding: 0.75rem 1.5rem;
-border: none;
-border-radius: 6px;
-font-weight: bold;
-cursor: pointer;
-background: var(--primary);
-color: white;
-}
-​.btn-danger { background: #ef4444; }
-.btn-secondary { background: #475569; }
-​/* Admin Items List */
-.admin-list-item {
-display: flex;
-align-items: center;
-justify-content: space-between;
-background: #0f172a;
-padding: 0.75rem;
-margin-bottom: 0.5rem;
-border-radius: 6px;
-gap: 0.5rem;
-flex-wrap: wrap;
-}
-​.admin-list-item img {
-width: 45px;
-height: 45px;
-object-fit: contain;
-background: #000;
-border-radius: 4px;
-}
-​.item-actions {
-display: flex;
-gap: 0.4rem;
-}
-​.btn-icon {
-padding: 0.4rem 0.6rem;
-font-size: 0.85rem;
-}
-​/* Lightbox Fullscreen Preview */
-.lightbox-modal {
-display: none;
-position: fixed;
-top: 0; left: 0; width: 100%; height: 100%;
-background: rgba(0,0,0,0.92);
-z-index: 2000;
-justify-content: center;
-align-items: center;
-padding: 1rem;
-}
-​.lightbox-img {
-max-width: 95vw;
-max-height: 90vh;
-object-fit: contain;
-border-radius: 8px;
-}
-​@media (max-width: 600px) {
-.nav-container { justify-content: center; }
-.hero { padding: 1.5rem 0.5rem; }
-.main-container { padding: 1rem; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serwer Minecraft - Owiedzgi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.75);
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --accent: #34d399;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --status-online: #10b981;
+            --status-maintenance: #f59e0b;
+            --status-offline: #ef4444;
+            --bg-image: url('https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=1920&auto=format&fit=crop');
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .server-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .server-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .nav-links a, .admin-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .admin-btn {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--primary);
+        }
+
+        .admin-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-online { background-color: var(--status-online); box-shadow: 0 0 10px var(--status-online); }
+        .status-maintenance { background-color: var(--status-maintenance); box-shadow: 0 0 10px var(--status-maintenance); }
+        .status-offline { background-color: var(--status-offline); box-shadow: 0 0 10px var(--status-offline); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-card i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .val {
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .stat-card .lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .ip-box {
+            display: inline-flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            backdrop-filter: blur(5px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .ip-text { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: var(--accent); }
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .copy-btn:hover { background: var(--primary-hover); }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.2rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .rules-list {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .rules-list ol {
+            padding-left: 1.2rem;
+        }
+
+        .rules-list li {
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem;
+            color: #cbd5e1;
+            word-break: break-word;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gallery-img-wrapper {
+            width: 100%;
+            height: 220px;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gallery-img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+
+        .gallery-card:hover .gallery-img {
+            transform: scale(1.03);
+        }
+
+        .gallery-caption {
+            padding: 1rem;
+            font-weight: 600;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            word-break: break-word;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger { background: #ef4444; }
+        .btn-secondary { background: #475569; }
+
+        .admin-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-list-item img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            background: #000;
+            border-radius: 4px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .btn-icon {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .lightbox-img {
+            max-width: 95vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .nav-container { justify-content: center; }
+            .hero { padding: 1.5rem 0.5rem; }
+            .main-container { padding: 1rem; }
+        }
+    </style>
 </head>
 <body>
-​<header>
-<div class="nav-container">
-<a href="#" class="logo-container">
-<img id="display-avatar" src="https://via.placeholder.com/150/10b981/ffffff?text=O" class="server-avatar" alt="Logo">
-<span class="server-name" id="display-name">Owiedzgi</span>
-</a>
-<div class="nav-links">
-<a href="#regulamin">Regulamin</a>
-<a href="#galeria">Galeria</a>
-<button class="admin-btn" onclick="openAdminModal()"><i class="fa-solid fa-lock"></i> Admin</button>
-</div>
-</div>
-</header>
-​<div class="main-container">
-<section class="hero">
-<h1>Witaj na <span style="color: var(--primary);">Owiedzgi</span>!</h1>
-​<div class="status-badge" id="display-status-badge">
-<span class="status-dot status-online" id="display-status-dot"></span>
-<span id="display-status-text">Serwer Aktywny</span>
-</div>
-​<div class="stats-grid">
-<div class="stat-card">
-<i class="fa-solid fa-users"></i>
-<div class="val" id="display-players">0 / 100</div>
-<div class="lbl">Graczy Online</div>
-</div>
-<div class="stat-card">
-<i class="fa-solid fa-code-branch"></i>
-<div class="val" id="display-version">1.20.x</div>
-<div class="lbl">Wersja Minecraft</div>
-</div>
-</div>
-​<div class="ip-box">
-<span class="ip-text" id="display-ip">owiedzgi.pl</span>
-<button class="copy-btn" onclick="copyIp()"><i class="fa-regular fa-copy"></i> Kopiuj IP</button>
-</div>
-</section>
-​<h2 class="section-title" id="regulamin">Regulamin Serwera</h2>
-<div class="rules-list">
-<ol id="display-rules"></ol>
-</div>
-​<h2 class="section-title" id="galeria">Galeria Serwera</h2>
-<div class="gallery-grid" id="display-gallery"></div>
-</div>
-​<!-- Lightbox Preview -->
-<div class="lightbox-modal" id="lightbox-modal" onclick="closeLightbox()">
-<img src="" class="lightbox-img" id="lightbox-img">
-</div>
-​<!-- Modal Login -->
-<div class="modal" id="login-modal">
-<div class="modal-content" style="max-width: 380px;">
-<div class="modal-header">
-<h3>Panel Administratora</h3>
-<button class="close-btn" onclick="closeModal('login-modal')">×</button>
-</div>
-<div class="form-group">
-<label>Wprowadź kod PIN:</label>
-<input type="password" id="admin-pin" class="form-control" placeholder="****">
-</div>
-<button class="btn" style="width:100%" onclick="loginAdmin()">Zaloguj</button>
-</div>
-</div>
-​<!-- Modal Admin Dashboard -->
-<div class="modal" id="admin-modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3>Zarządzanie Stroną</h3>
-<button class="close-btn" onclick="closeModal('admin-modal')">×</button>
-</div>
-​<h4 style="margin-bottom: 1rem; color: var(--accent);">Statystyki i Informacje</h4>
-<div class="form-row">
-<div class="form-group">
-<label>IP Serwera</label>
-<input type="text" id="input-ip" class="form-control" onchange="updateInfoFromAdmin()">
-</div>
-<div class="form-group">
-<label>Wersja Minecraft</label>
-<input type="text" id="input-version" class="form-control" placeholder="np. 1.20.4" onchange="updateInfoFromAdmin()">
-</div>
-</div>
-​<div class="form-row">
-<div class="form-group">
-<label>Status Serwera</label>
-<select id="input-status" class="form-control" onchange="updateInfoFromAdmin()">
-<option value="online">Online (Aktywny)</option>
-<option value="maintenance">Prace Techniczne</option>
-<option value="offline">Offline (Wyłączony)</option>
-</select>
-</div>
-<div class="form-group">
-<label>Gracze Online / Max</label>
-<div style="display:flex; gap:0.5rem;">
-<input type="number" id="input-players-online" class="form-control" placeholder="Online" onchange="updateInfoFromAdmin()">
-<input type="number" id="input-players-max" class="form-control" placeholder="Max" onchange="updateInfoFromAdmin()">
-</div>
-</div>
-</div>
-​<hr style="border-color: var(--border); margin: 1.5rem 0;">
-​<!-- Wygląd z opcją Link URL / Plik -->
-<h4 style="margin-bottom: 1rem; color: var(--accent);">Wygląd Strony</h4>
-​<div class="form-group">
-<label>Awatar / Profilowe Serwera</label>
-<div class="tab-buttons">
-<button class="tab-btn active" id="btn-avatar-url" onclick="switchImageTab('avatar', 'url')">Adres URL</button>
-<button class="tab-btn" id="btn-avatar-file" onclick="switchImageTab('avatar', 'file')">Plik z dysku</button>
-</div>
-<input type="text" id="input-avatar-url" class="form-control" placeholder="https://..." onchange="updateAvatarUrl(this.value)">
-<input type="file" id="input-avatar-file" class="form-control" accept="image/*" style="display:none;" onchange="handleFileUpload(event, 'avatar')">
-</div>
-​<div class="form-group">
-<label>Tło Strony</label>
-<div class="tab-buttons">
-<button class="tab-btn active" id="btn-bg-url" onclick="switchImageTab('bg', 'url')">Adres URL</button>
-<button class="tab-btn" id="btn-bg-file" onclick="switchImageTab('bg', 'file')">Plik z dysku</button>
-</div>
-<input type="text" id="input-bg-url" class="form-control" placeholder="https://..." onchange="updateBgUrl(this.value)">
-<input type="file" id="input-bg-file" class="form-control" accept="image/*" style="display:none;" onchange="handleFileUpload(event, 'bg')">
-</div>
-​<hr style="border-color: var(--border); margin: 1.5rem 0;">
-​<!-- Edycja Regulaminu -->
-<h4 style="margin-bottom: 1rem; color: var(--accent);">Edycja Regulaminu</h4>
-<div class="form-group" style="display:flex; gap:0.5rem;">
-<input type="text" id="new-rule-input" class="form-control" placeholder="Wpisz treść nowej zasady...">
-<button class="btn" onclick="addRule()">Dodaj</button>
-</div>
-<div id="admin-rules-list"></div>
-​<hr style="border-color: var(--border); margin: 1.5rem 0;">
-​<!-- Zarządzanie Galerią z URL i Plikiem -->
-<h4 style="margin-bottom: 1rem; color: var(--accent);">Zarządzanie Galerią</h4>
-<div class="form-group">
-<label>Dodaj Zdjęcie do Galerii</label>
-<div class="tab-buttons">
-<button class="tab-btn active" id="btn-gallery-url" onclick="switchImageTab('gallery', 'url')">Adres URL</button>
-<button class="tab-btn" id="btn-gallery-file" onclick="switchImageTab('gallery', 'file')">Plik z dysku</button>
-</div>
-​<input type="text" id="input-gallery-url" class="form-control" placeholder="Wklej link do zdjęcia (np. https://...)">
-<input type="file" id="input-gallery-file" class="form-control" accept="image/*" style="display:none;">
-​<input type="text" id="input-gallery-caption" class="form-control" placeholder="Podpis zdjęcia..." style="margin-top:0.5rem;">
-<button class="btn" style="margin-top:0.5rem; width:100%;" onclick="addGalleryImage()">Dodaj Zdjęcie</button>
-</div>
-<div id="admin-gallery-list"></div>
-​<hr style="border-color: var(--border); margin: 1.5rem 0;">
-<button class="btn btn-secondary" style="width: 100%; font-size: 1rem;" onclick="downloadStaticHTML()">
-<i class="fa-solid fa-download"></i> Pobierz gotowy kod HTML z zaszytymi zdjęciami
-</button>
-</div>
-</div>
-​<script>
-// Domyślny Stan Danych
-let state = {
-ip: 'owiedzgi.pl',
-version: '1.20.x',
-status: 'online',
-playersOnline: 12,
-playersMax: 100,
-avatar: 'https://via.placeholder.com/150/10b981/ffffff?text=O',
-bgImage: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=1920&auto=format&fit=crop',
-rules: [
-"Szanuj innych graczy oraz administrację.",
-"Zakaz używania modyfikacji dających przewagę (cheaty, xray).",
-"Zakaz reklamy innych serwerów."
-],
-gallery: []
-};
-​// Wczytanie z localStorage
-function loadState() {
-const saved = localStorage.getItem('owiedzgi_state');
-if (saved) {
-try { state = Object.assign({}, state, JSON.parse(saved)); } catch(e){}
-}
-renderApp();
-}
-​function saveState() {
-try {
-localStorage.setItem('owiedzgi_state', JSON.stringify(state));
-} catch(e) {
-alert("Pamięć przeglądarki jest pełna! Używaj linków URL lub usuń kilka starych zdjęć.");
-}
-renderApp();
-}
-​// Renderowanie danych na stronie
-function renderApp() {
-document.getElementById('display-avatar').src = state.avatar;
-document.documentElement.style.setProperty('--bg-image', url('${state.bgImage}'));
-​document.getElementById('display-ip').innerText = state.ip;
-document.getElementById('display-version').innerText = state.version;
-document.getElementById('display-players').innerText = ${state.playersOnline} / ${state.playersMax};
-​// Status Badge
-const dot = document.getElementById('display-status-dot');
-const statusTxt = document.getElementById('display-status-text');
-dot.className = 'status-dot ' + (state.status === 'online' ? 'status-online' : state.status === 'maintenance' ? 'status-maintenance' : 'status-offline');
-statusTxt.innerText = state.status === 'online' ? 'Serwer Aktywny' : state.status === 'maintenance' ? 'Prace Techniczne' : 'Serwer Offline';
-​// Regulamin
-const rulesEl = document.getElementById('display-rules');
-rulesEl.innerHTML = state.rules.map(r => <li>${r}</li>).join('');
-​// Galeria
-const galleryEl = document.getElementById('display-gallery');
-if(state.gallery.length === 0) {
-galleryEl.innerHTML = '<p style="color:var(--text-muted); grid-column: 1/-1; text-align:center;">Brak zdjęć w galerii. Dodaj je w Panelu Admina!</p>';
-} else {
-galleryEl.innerHTML = state.gallery.map(img => <div class="gallery-card"> <div class="gallery-img-wrapper" onclick="openLightbox('${img.url}')"> <img src="${img.url}" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Błąd+wczytywania'"> </div> <div class="gallery-caption">${img.caption || 'Zdjęcie z serwera'}</div> </div>).join('');
-}
-}
-​/* --- Funkcje Lightbox --- */
-function openLightbox(url) {
-document.getElementById('lightbox-img').src = url;
-document.getElementById('lightbox-modal').style.display = 'flex';
-}
-​function closeLightbox() {
-document.getElementById('lightbox-modal').style.display = 'none';
-}
-​/* --- Funkcje Admina --- */
-function openAdminModal() {
-document.getElementById('login-modal').style.display = 'flex';
-}
-​function closeModal(id) {
-document.getElementById(id).style.display = 'none';
-}
-​function loginAdmin() {
-const pin = document.getElementById('admin-pin').value;
-if (pin === '7328') {
-closeModal('login-modal');
-document.getElementById('admin-modal').style.display = 'flex';
-populateAdminInputs();
-renderAdminPanel();
-} else {
-alert('Błędny PIN!');
-}
-}
-​function populateAdminInputs() {
-document.getElementById('input-ip').value = state.ip;
-document.getElementById('input-version').value = state.version;
-document.getElementById('input-status').value = state.status;
-document.getElementById('input-players-online').value = state.playersOnline;
-document.getElementById('input-players-max').value = state.playersMax;
-document.getElementById('input-avatar-url').value = state.avatar.startsWith('data:') ? '' : state.avatar;
-document.getElementById('input-bg-url').value = state.bgImage.startsWith('data:') ? '' : state.bgImage;
-}
-​function updateInfoFromAdmin() {
-state.ip = document.getElementById('input-ip').value.trim() || 'owiedzgi.pl';
-state.version = document.getElementById('input-version').value.trim() || '1.20.x';
-state.status = document.getElementById('input-status').value;
-state.playersOnline = parseInt(document.getElementById('input-players-online').value) || 0;
-state.playersMax = parseInt(document.getElementById('input-players-max').value) || 100;
-saveState();
-}
-​/* TAB MANAGEMENT */
-function switchImageTab(section, mode) {
-const btnUrl = document.getElementById(btn-${section}-url);
-const btnFile = document.getElementById(btn-${section}-file);
-const inputUrl = document.getElementById(input-${section}-url);
-const inputFile = document.getElementById(input-${section}-file);
-​if (mode === 'url') {
-btnUrl.classList.add('active');
-btnFile.classList.remove('active');
-inputUrl.style.display = 'block';
-inputFile.style.display = 'none';
-} else {
-btnFile.classList.add('active');
-btnUrl.classList.remove('active');
-inputFile.style.display = 'block';
-inputUrl.style.display = 'none';
-}
-}
-​/* OBSŁUGA AWATARA I TŁA */
-function updateAvatarUrl(val) {
-if (val.trim()) {
-state.avatar = val.trim();
-saveState();
-}
-}
-​function updateBgUrl(val) {
-if (val.trim()) {
-state.bgImage = val.trim();
-saveState();
-}
-}
-​// Kompresor zdjęć dodawanych z dysku
-function compressAndResizeImage(file, maxWidth, maxHeight, quality, callback) {
-const reader = new FileReader();
-reader.readAsDataURL(file);
-reader.onload = function(event) {
-const img = new Image();
-img.src = event.target.result;
-img.onload = function() {
-let width = img.width;
-let height = img.height;
-​if (width > height) {
-if (width > maxWidth) {
-height *= maxWidth / width;
-width = maxWidth;
-}
-} else {
-if (height > maxHeight) {
-width *= maxHeight / height;
-height = maxHeight;
-}
-}
-​const canvas = document.createElement('canvas');
-canvas.width = width;
-canvas.height = height;
-const ctx = canvas.getContext('2d');
-ctx.drawImage(img, 0, 0, width, height);
-callback(canvas.toDataURL('image/jpeg', quality));
-};
-};
-}
-​function handleFileUpload(e, section) {
-const file = e.target.files[0];
-if (file) {
-compressAndResizeImage(file, 1200, 1200, 0.7, resizedBase64 => {
-if (section === 'avatar') state.avatar = resizedBase64;
-if (section === 'bg') state.bgImage = resizedBase64;
-saveState();
-});
-}
-}
-​/* GIERA / DODAJE ZDJĘCIE DO GALERII */
-function addGalleryImage() {
-const isUrlActive = document.getElementById('btn-gallery-url').classList.contains('active');
-const caption = document.getElementById('input-gallery-caption').value.trim();
-​if (isUrlActive) {
-const url = document.getElementById('input-gallery-url').value.trim();
-if (!url) return alert('Wpisz prawidłowy adres URL!');
-​state.gallery.push({ url: url, caption: caption });
-document.getElementById('input-gallery-url').value = '';
-document.getElementById('input-gallery-caption').value = '';
-saveState();
-renderAdminPanel();
-} else {
-const fileInput = document.getElementById('input-gallery-file');
-const file = fileInput.files[0];
-if (!file) return alert('Wybierz plik z dysku!');
-​compressAndResizeImage(file, 1000, 1000, 0.7, resizedBase64 => {
-state.gallery.push({ url: resizedBase64, caption: caption });
-fileInput.value = '';
-document.getElementById('input-gallery-caption').value = '';
-saveState();
-renderAdminPanel();
-});
-}
-}
-​function renderAdminPanel() {
-// Render Regulaminu
-const adminRulesEl = document.getElementById('admin-rules-list');
-adminRulesEl.innerHTML = state.rules.map((rule, idx) => <div class="admin-list-item"> <span style="flex-grow:1; margin-right:0.5rem;">${idx + 1}. ${rule}</span> <button class="btn btn-danger btn-icon" onclick="deleteRule(${idx})"><i class="fa-solid fa-trash"></i></button> </div>).join('');
-​// Render Galerii
-const adminGalleryEl = document.getElementById('admin-gallery-list');
-adminGalleryEl.innerHTML = state.gallery.map((img, idx) => <div class="admin-list-item"> <img src="${img.url}" onerror="this.src='https://via.placeholder.com/45?text=Err'"> <span style="flex-grow:1; margin:0 0.5rem; text-overflow:ellipsis; overflow:hidden;">${img.caption || 'Bez podpisu'}</span> <div class="item-actions"> <button class="btn btn-secondary btn-icon" ${idx === 0 ? 'disabled' : ''} onclick="moveGallery(${idx}, -1)">⬆</button> <button class="btn btn-secondary btn-icon" ${idx === state.gallery.length - 1 ? 'disabled' : ''} onclick="moveGallery(${idx}, 1)">⬇</button> <button class="btn btn-danger btn-icon" onclick="deleteGallery(${idx})"><i class="fa-solid fa-trash"></i></button> </div> </div>).join('');
-}
-​// Regulamin Logic
-function addRule() {
-const val = document.getElementById('new-rule-input').value.trim();
-if(val) {
-state.rules.push(val);
-document.getElementById('new-rule-input').value = '';
-saveState();
-renderAdminPanel();
-}
-}
-​function deleteRule(idx) {
-state.rules.splice(idx, 1);
-saveState();
-renderAdminPanel();
-}
-​// Segregacja Galerii
-function moveGallery(idx, direction) {
-const target = idx + direction;
-if(target >= 0 && target < state.gallery.length) {
-const temp = state.gallery[idx];
-state.gallery[idx] = state.gallery[target];
-state.gallery[target] = temp;
-saveState();
-renderAdminPanel();
-}
-}
-​function deleteGallery(idx) {
-state.gallery.splice(idx, 1);
-saveState();
-renderAdminPanel();
-}
-​function copyIp() {
-navigator.clipboard.writeText(state.ip);
-alert("Skopiowano IP: " + state.ip);
-}
-​// Pobieranie Zaktualizowanego Pliku HTML
-function downloadStaticHTML() {
-const currentDoc = document.documentElement.outerHTML;
-const stateJson = JSON.stringify(state);
-const updatedDoc = currentDoc.replace(/let state = {[\s\S]*?};/, let state = ${stateJson};);
-​const blob = new Blob([updatedDoc], { type: 'text/html' });
-const a = document.createElement('a');
-a.href = URL.createObjectURL(blob);
-a.download = 'index.html';
-a.click();
-}
-​// Inicjalizacja
-loadState();
-</script>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo-container">
+                <img id="display-avatar" src="https://via.placeholder.com/150/10b981/ffffff?text=O" class="server-avatar" alt="Logo">
+                <span class="server-name" id="display-name">Owiedzgi</span>
+            </a>
+            <div class="nav-links">
+                <a href="#regulamin">Regulamin</a>
+                <a href="#galeria">Galeria</a>
+                <button class="admin-btn" onclick="openAdminModal()"><i class="fa-solid fa-lock"></i> Admin</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <section class="hero">
+            <h1>Witaj na <span style="color: var(--primary);">Owiedzgi</span>!</h1>
+            
+            <div class="status-badge" id="display-status-badge">
+                <span class="status-dot status-online" id="display-status-dot"></span>
+                <span id="display-status-text">Serwer Aktywny</span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fa-solid fa-users"></i>
+                    <div class="val" id="display-players">0 / 100</div>
+                    <div class="lbl">Graczy Online</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-code-branch"></i>
+                    <div class="val" id="display-version">1.20.x</div>
+                    <div class="lbl">Wersja Minecraft</div>
+                </div>
+            </div>
+
+            <div class="ip-box">
+                <span class="ip-text" id="display-ip">owiedzgi.pl</span>
+                <button class="copy-btn" onclick="copyIp()"><i class="fa-regular fa-copy"></i> Kopiuj IP</button>
+            </div>
+        </section>
+
+        <h2 class="section-title" id="regulamin">Regulamin Serwera</h2>
+        <div class="rules-list">
+            <ol id="display-rules"></ol>
+        </div>
+
+        <h2 class="section-title" id="galeria">Galeria Serwera</h2>
+        <div class="gallery-grid" id="display-gallery"></div>
+    </div>
+
+    <!-- Lightbox Preview -->
+    <div class="lightbox-modal" id="lightbox-modal" onclick="closeLightbox()">
+        <img src="" class="lightbox-img" id="lightbox-img">
+    </div>
+
+    <!-- Modal Login -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content" style="max-width: 380px;">
+            <div class="modal-header">
+                <h3>Panel Administratora</h3>
+                <button class="close-btn" onclick="closeModal('login-modal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Wprowadź kod PIN:</label>
+                <input type="password" id="admin-pin" class="form-control" placeholder="****">
+            </div>
+            <button class="btn" style="width:100%" onclick="loginAdmin()">Zaloguj</button>
+        </div>
+    </div>
+
+    <!-- Modal Admin Dashboard -->
+    <div class="modal" id="admin-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Zarządzanie Stroną</h3>
+                <button class="close-btn" onclick="closeModal('admin-modal')">&times;</button>
+            </div>
+
+            <h4 style="margin-bottom: 1rem; color: var(--accent);">Statystyki i Informacje</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>IP Serwera</label>
+                    <input type="text" id="input-ip" class="form-control" onchange="updateInfoFromAdmin()">
+                </div>
+                <div class="form-group">
+                    <label>Wersja Minecraft</label>
+                    <input type="text" id="input-version" class="form-control" placeholder="np. 1.20.4" onchange="updateInfoFromAdmin()">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Status Serwera</label>
+                    <select id="input-status" class="form-control" onchange="updateInfoFromAdmin()">
+                        <option value="online">Online (Aktywny)</option>
+                        <option value="maintenance">Prace Techniczne</option>
+                        <option value="offline">Offline (Wyłączony)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Gracze Online / Max</label>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input type="number" id="input-players-online" class="form-control" placeholder="Online" onchange="updateInfoFromAdmin()">
+                        <input type="number" id="input-players-max" class="form-control" placeholder="Max" onchange="updateInfoFromAdmin()">
+                    </div>
+                </div>
+            </div>
+
+            <hr style="border-color: var(--border); margin: 1.5rem 0;">
+
+            <h4 style="margin-bottom: 1rem; color: var(--accent);">Wygląd Strony</h4>
+
+            <div class="form-group">
+                <label>Awatar / Profilowe Serwera</label>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" id="btn-avatar-url" onclick="switchImageTab('avatar', 'url')">Adres URL</button>
+                    <button class="tab-btn" id="btn-avatar-file" onclick="switchImageTab('avatar', 'file')">Plik z dysku</button>
+                </div>
+                <input type="text" id="input-avatar-url" class="form-control" placeholder="https://..." onchange="updateAvatarUrl(this.value)">
+                <input type="file" id="input-avatar-file" class="form-control" accept="image/*" style="display:none;" onchange="handleFileUpload(event, 'avatar')">
+            </div>
+
+            <div class="form-group">
+                <label>Tło Strony</label>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" id="btn-bg-url" onclick="switchImageTab('bg', 'url')">Adres URL</button>
+                    <button class="tab-btn" id="btn-bg-file" onclick="switchImageTab('bg', 'file')">Plik z dysku</button>
+                </div>
+                <input type="text" id="input-bg-url" class="form-control" placeholder="https://..." onchange="updateBgUrl(this.value)">
+                <input type="file" id="input-bg-file" class="form-control" accept="image/*" style="display:none;" onchange="handleFileUpload(event, 'bg')">
+            </div>
+
+            <hr style="border-color: var(--border); margin: 1.5rem 0;">
+
+            <h4 style="margin-bottom: 1rem; color: var(--accent);">Edycja Regulaminu</h4>
+            <div class="form-group" style="display:flex; gap:0.5rem;">
+                <input type="text" id="new-rule-input" class="form-control" placeholder="Wpisz treść nowej zasady...">
+                <button class="btn" onclick="addRule()">Dodaj</button>
+            </div>
+            <div id="admin-rules-list"></div>
+
+            <hr style="border-color: var(--border); margin: 1.5rem 0;">
+
+            <h4 style="margin-bottom: 1rem; color: var(--accent);">Zarządzanie Galerią</h4>
+            <div class="form-group">
+                <label>Dodaj Zdjęcie do Galerii</label>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" id="btn-gallery-url" onclick="switchImageTab('gallery', 'url')">Adres URL</button>
+                    <button class="tab-btn" id="btn-gallery-file" onclick="switchImageTab('gallery', 'file')">Plik z dysku</button>
+                </div>
+                
+                <input type="text" id="input-gallery-url" class="form-control" placeholder="Wklej link do zdjęcia (np. https://...)">
+                <input type="file" id="input-gallery-file" class="form-control" accept="image/*" style="display:none;">
+                
+                <input type="text" id="input-gallery-caption" class="form-control" placeholder="Podpis zdjęcia..." style="margin-top:0.5rem;">
+                <button class="btn" style="margin-top:0.5rem; width:100%;" onclick="addGalleryImage()">Dodaj Zdjęcie</button>
+            </div>
+            <div id="admin-gallery-list"></div>
+
+            <hr style="border-color: var(--border); margin: 1.5rem 0;">
+            <button class="btn btn-secondary" style="width: 100%; font-size: 1rem;" onclick="downloadStaticHTML()">
+                <i class="fa-solid fa-download"></i> Pobierz gotowy kod HTML z zaszytymi zdjęciami
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let state = {
+            ip: 'owiedzgi.pl',
+            version: '1.20.x',
+            status: 'online',
+            playersOnline: 12,
+            playersMax: 100,
+            avatar: 'https://via.placeholder.com/150/10b981/ffffff?text=O',
+            bgImage: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=1920&auto=format&fit=crop',
+            rules: [
+                "Szanuj innych graczy oraz administrację.",
+                "Zakaz używania modyfikacji dających przewagę (cheaty, xray).",
+                "Zakaz reklamy innych serwerów."
+            ],
+            gallery: []
+        };
+
+        function loadState() {
+            const saved = localStorage.getItem('owiedzgi_state');
+            if (saved) {
+                try { state = Object.assign({}, state, JSON.parse(saved)); } catch(e){}
+            }
+            renderApp();
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('owiedzgi_state', JSON.stringify(state));
+            } catch(e) {
+                alert("Pamięć przeglądarki jest pełna! Używaj linków URL lub usuń kilka starych zdjęć.");
+            }
+            renderApp();
+        }
+
+        function renderApp() {
+            document.getElementById('display-avatar').src = state.avatar;
+            document.documentElement.style.setProperty('--bg-image', `url('${state.bgImage}')`);
+
+            document.getElementById('display-ip').innerText = state.ip;
+            document.getElementById('display-version').innerText = state.version;
+            document.getElementById('display-players').innerText = `${state.playersOnline} / ${state.playersMax}`;
+
+            const dot = document.getElementById('display-status-dot');
+            const statusTxt = document.getElementById('display-status-text');
+            dot.className = 'status-dot ' + (state.status === 'online' ? 'status-online' : state.status === 'maintenance' ? 'status-maintenance' : 'status-offline');
+            statusTxt.innerText = state.status === 'online' ? 'Serwer Aktywny' : state.status === 'maintenance' ? 'Prace Techniczne' : 'Serwer Offline';
+
+            const rulesEl = document.getElementById('display-rules');
+            rulesEl.innerHTML = state.rules.map(r => `<li>${r}</li>`).join('');
+
+            const galleryEl = document.getElementById('display-gallery');
+            if(state.gallery.length === 0) {
+                galleryEl.innerHTML = '<p style="color:var(--text-muted); grid-column: 1/-1; text-align:center;">Brak zdjęć w galerii. Dodaj je w Panelu Admina!</p>';
+            } else {
+                galleryEl.innerHTML = state.gallery.map(img => `
+                    <div class="gallery-card">
+                        <div class="gallery-img-wrapper" onclick="openLightbox('${img.url}')">
+                            <img src="${img.url}" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Błąd+wczytywania'">
+                        </div>
+                        <div class="gallery-caption">${img.caption || 'Zdjęcie z serwera'}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openLightbox(url) {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('lightbox-modal').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox-modal').style.display = 'none';
+        }
+
+        function openAdminModal() {
+            document.getElementById('login-modal').style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function loginAdmin() {
+            const pin = document.getElementById('admin-pin').value;
+            if (pin === '7328') {
+                closeModal('login-modal');
+                document.getElementById('admin-modal').style.display = 'flex';
+                populateAdminInputs();
+                renderAdminPanel();
+            } else {
+                alert('Błędny PIN!');
+            }
+        }
+
+        function populateAdminInputs() {
+            document.getElementById('input-ip').value = state.ip;
+            document.getElementById('input-version').value = state.version;
+            document.getElementById('input-status').value = state.status;
+            document.getElementById('input-players-online').value = state.playersOnline;
+            document.getElementById('input-players-max').value = state.playersMax;
+            document.getElementById('input-avatar-url').value = state.avatar.startsWith('data:') ? '' : state.avatar;
+            document.getElementById('input-bg-url').value = state.bgImage.startsWith('data:') ? '' : state.bgImage;
+        }
+
+        function updateInfoFromAdmin() {
+            state.ip = document.getElementById('input-ip').value.trim() || 'owiedzgi.pl';
+            state.version = document.getElementById('input-version').value.trim() || '1.20.x';
+            state.status = document.getElementById('input-status').value;
+            state.playersOnline = parseInt(document.getElementById('input-players-online').value) || 0;
+            state.playersMax = parseInt(document.getElementById('input-players-max').value) || 100;
+            saveState();
+        }
+
+        function switchImageTab(section, mode) {
+            const btnUrl = document.getElementById(`btn-${section}-url`);
+            const btnFile = document.getElementById(`btn-${section}-file`);
+            const inputUrl = document.getElementById(`input-${section}-url`);
+            const inputFile = document.getElementById(`input-${section}-file`);
+
+            if (mode === 'url') {
+                btnUrl.classList.add('active');
+                btnFile.classList.remove('active');
+                inputUrl.style.display = 'block';
+                inputFile.style.display = 'none';
+            } else {
+                btnFile.classList.add('active');
+                btnUrl.classList.remove('active');
+                inputFile.style.display = 'block';
+                inputUrl.style.display = 'none';
+            }
+        }
+
+        function updateAvatarUrl(val) {
+            if (val.trim()) {
+                state.avatar = val.trim();
+                saveState();
+            }
+        }
+
+        function updateBgUrl(val) {
+            if (val.trim()) {
+                state.bgImage = val.trim();
+                saveState();
+            }
+        }
+
+        function compressAndResizeImage(file, maxWidth, maxHeight, quality, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', quality));
+                };
+            };
+        }
+
+        function handleFileUpload(e, section) {
+            const file = e.target.files[0];
+            if (file) {
+                compressAndResizeImage(file, 1200, 1200, 0.7, resizedBase64 => {
+                    if (section === 'avatar') state.avatar = resizedBase64;
+                    if (section === 'bg') state.bgImage = resizedBase64;
+                    saveState();
+                });
+            }
+        }
+
+        function addGalleryImage() {
+            const isUrlActive = document.getElementById('btn-gallery-url').classList.contains('active');
+            const caption = document.getElementById('input-gallery-caption').value.trim();
+
+            if (isUrlActive) {
+                const url = document.getElementById('input-gallery-url').value.trim();
+                if (!url) return alert('Wpisz prawidłowy adres URL!');
+
+                state.gallery.push({ url: url, caption: caption });
+                document.getElementById('input-gallery-url').value = '';
+                document.getElementById('input-gallery-caption').value = '';
+                saveState();
+                renderAdminPanel();
+            } else {
+                const fileInput = document.getElementById('input-gallery-file');
+                const file = fileInput.files[0];
+                if (!file) return alert('Wybierz plik z dysku!');
+
+                compressAndResizeImage(file, 1000, 1000, 0.7, resizedBase64 => {
+                    state.gallery.push({ url: resizedBase64, caption: caption });
+                    fileInput.value = '';
+                    document.getElementById('input-gallery-caption').value = '';
+                    saveState();
+                    renderAdminPanel();
+                });
+            }
+        }
+
+        function renderAdminPanel() {
+            const adminRulesEl = document.getElementById('admin-rules-list');
+            adminRulesEl.innerHTML = state.rules.map((rule, idx) => `
+                <div class="admin-list-item">
+                    <span style="flex-grow:1; margin-right:0.5rem;">${idx + 1}. ${rule}</span>
+                    <button class="btn btn-danger btn-icon" onclick="deleteRule(${idx})"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+
+            const adminGalleryEl = document.getElementById('admin-gallery-list');
+            adminGalleryEl.innerHTML = state.gallery.map((img, idx) => `
+                <div class="admin-list-item">
+                    <img src="${img.url}" onerror="this.src='https://via.placeholder.com/45?text=Err'">
+                    <span style="flex-grow:1; margin:0 0.5rem; text-overflow:ellipsis; overflow:hidden;">${img.caption || 'Bez podpisu'}</span>
+                    <div class="item-actions">
+                        <button class="btn btn-secondary btn-icon" ${idx === 0 ? 'disabled' : ''} onclick="moveGallery(${idx}, -1)">⬆</button>
+                        <button class="btn btn-secondary btn-icon" ${idx === state.gallery.length - 1 ? 'disabled' : ''} onclick="moveGallery(${idx}, 1)">⬇</button>
+                        <button class="btn btn-danger btn-icon" onclick="deleteGallery(${idx})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addRule() {
+            const val = document.getElementById('new-rule-input').value.trim();
+            if(val) {
+                state.rules.push(val);
+                document.getElementById('new-rule-input').value = '';
+                saveState();
+                renderAdminPanel();
+            }
+        }
+
+        function deleteRule(idx) {
+            state.rules.splice(idx, 1);
+            saveState();
+            renderAdminPanel();
+        }
+
+        function moveGallery(idx, direction) {
+            const target = idx + direction;
+            if(target >= 0 && target < state.gallery.length) {
+                const temp = state.gallery[idx];
+                state.gallery[idx] = state.gallery[target];
+                state.gallery[target] = temp;
+                saveState();
+                renderAdminPanel();
+            }
+        }
+
+        function deleteGallery(idx) {
+            state.gallery.splice(idx, 1);
+            saveState();
+            renderAdminPanel();
+        }
+
+        function copyIp() {
+            navigator.clipboard.writeText(state.ip);
+            alert("Skopiowano IP: " + state.ip);
+        }
+
+        function downloadStaticHTML() {
+            const currentDoc = document.documentElement.outerHTML;
+            const stateJson = JSON.stringify(state);
+            const updatedDoc = currentDoc.replace(/let state = \{[\s\S]*?\};/, `let state = ${stateJson};`);
+
+            const blob = new Blob([updatedDoc], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'index.html';
+            a.click();
+        }
+
+        loadState();
+    </script>
 </body>
 </html>
